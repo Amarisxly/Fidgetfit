@@ -1,0 +1,1619 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FidgetFit">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="FidgetFit">
+<meta name="description" content="职场久坐族的微运动 App：久坐提醒、2 分钟跟练、100 个微动作动作库。">
+<script>try{if(window.self!==window.top)document.documentElement.classList.add("embedded")}catch(e){document.documentElement.classList.add("embedded")}</script>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<title>FidgetFit 轻弹玩家</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --top:48px;--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
+  --bg:#000;--s1:#121212;--s2:#161616;--s3:#1A1A1A;--line:#222;--line2:#2A2A2A;
+  --mint:#4CB5AE;--orange:#FF8A5C;--muted:#9A9A9A;--dim:#7A7A7A;--soft:#CFCFCF;--white:#fff;
+  --display:'Anton',Impact,sans-serif;--body:'Noto Sans SC',-apple-system,'PingFang SC',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#0A0A0A;color:var(--white);font-family:var(--body)}
+button,input{font-family:inherit;color:inherit}
+button{cursor:pointer;border:none;background:none}
+.d{font-family:var(--display);font-weight:400}
+
+/* ---------- stage ---------- */
+.stage{min-height:100%;display:flex;align-items:center;justify-content:center;gap:72px;padding:24px}
+.intro{max-width:340px;display:flex;flex-direction:column;gap:18px}
+.intro .k{font-size:12px;letter-spacing:2px;color:var(--muted)}
+.intro h1{font-family:var(--display);font-weight:400;font-size:72px;line-height:.9;text-transform:uppercase}
+.intro h1 span{color:var(--mint)}
+.intro p{font-size:15px;line-height:1.7;color:var(--soft)}
+.intro .sw{display:flex;gap:10px}
+.intro .sw i{width:40px;height:40px;border-radius:12px;display:block}
+.intro ul{list-style:none;display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted)}
+.intro li::before{content:'';display:inline-block;width:6px;height:6px;border-radius:3px;background:var(--orange);margin-right:10px;vertical-align:middle}
+
+.phone{position:relative;width:390px;height:min(844px,calc(100vh - 48px));min-height:640px;background:var(--bg);border-radius:54px;border:10px solid #1C1C1C;box-shadow:0 0 0 1px #2C2C2C,0 40px 120px rgba(0,0,0,.6);overflow:hidden;flex-shrink:0}
+@media (max-width:820px){.intro{display:none}}
+/* installed app: always full-bleed, no device frame */
+@media (display-mode: standalone), (display-mode: minimal-ui){
+  html,body{background:#000;overscroll-behavior:none}
+  .stage{padding:0;min-height:100dvh}
+  .intro{display:none}
+  .phone{position:fixed;inset:0;width:auto;height:auto;min-height:0;border-radius:0;border:none;box-shadow:none}
+  .tabbar{height:calc(78px + var(--sab))}
+  .view{bottom:calc(78px + var(--sab))}
+}
+body{-webkit-user-select:none;user-select:none}
+input{-webkit-user-select:text;user-select:text}
+.installbtn{height:36px;padding:0 14px;border-radius:999px;background:var(--orange);color:#000;font-size:13px;font-weight:900;flex-shrink:0}
+.installbtn.done{background:transparent;border:1px solid #2E5653;color:var(--mint)}
+@media (max-width:500px){
+  .stage{padding:0}
+  .phone{position:fixed;inset:0;width:auto;height:auto;min-height:0;border-radius:0;border:none;box-shadow:none}
+}
+/* inside a preview frame there is no notch to clear */
+html.embedded{--sat:0px;--sab:0px;--top:20px}
+
+/* ---------- shell ---------- */
+.view{position:absolute;top:0;left:0;right:0;bottom:88px;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.view::-webkit-scrollbar,.hscroll::-webkit-scrollbar,.scrollx::-webkit-scrollbar,.lib::-webkit-scrollbar{display:none}
+.view.enter{animation:fadeIn .35s ease both}
+.page{padding:calc(var(--top) + var(--sat)) 20px 32px;display:flex;flex-direction:column;gap:24px}
+.page.home{padding-left:0;padding-right:0}
+.page.home > .px{margin:0 20px}
+.press{transition:transform .15s ease,background .2s ease,color .2s ease}
+.press:active{transform:scale(.96)}
+
+.tabbar{position:absolute;left:0;right:0;bottom:0;height:88px;padding:10px 8px var(--sab);background:rgba(0,0,0,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid #1F1F1F;display:grid;grid-template-columns:repeat(5,1fr);z-index:5}
+.tab{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:var(--dim);min-height:48px;transition:color .2s ease}
+.tab .dot{width:4px;height:4px;border-radius:2px;background:var(--mint);opacity:0;transition:opacity .2s ease}
+.tab.on{color:var(--white);font-weight:700}
+.tab.on .dot{opacity:1}
+.fab{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;font-weight:700}
+.fab span{position:relative;width:60px;height:60px;margin-top:-28px;border-radius:30px;background:var(--orange);color:#000;border:4px solid #000;display:flex;align-items:center;justify-content:center}
+.fab span::before{content:'';position:absolute;inset:-4px;border-radius:34px;border:2px solid var(--orange);animation:ping 1.8s ease-out infinite}
+
+/* ---------- shared ---------- */
+.round{width:44px;height:44px;border-radius:22px;border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
+.kicker{font-size:12px;color:var(--muted);letter-spacing:1px}
+.h2row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.h2{font-size:20px;font-weight:900}
+.link{font-size:13px;color:var(--muted);padding:8px 0}
+.pill{height:40px;padding:0 18px;border-radius:999px;font-size:14px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap}
+.pill.white{background:#fff;color:#000}
+.pill.big{height:52px;padding:0 26px;font-size:16px;font-weight:900}
+.bigtitle{font-family:var(--display);font-weight:400;font-size:72px;line-height:.92;text-transform:uppercase}
+.card{background:var(--s1);border:1px solid var(--line);border-radius:28px;padding:22px}
+.live{display:flex;align-items:center;gap:5px;height:22px;padding:0 8px;border-radius:999px;border:1px solid var(--line2);font-size:10px;font-weight:700;letter-spacing:1px;color:var(--mint)}
+.blink{width:6px;height:6px;border-radius:3px;background:var(--mint);animation:blink 1.2s ease-in-out infinite;display:inline-block}
+.badge-dot{position:absolute;top:10px;right:11px;width:7px;height:7px;border-radius:4px;background:var(--orange)}
+.price{font-family:var(--display);font-size:22px}
+.was{font-size:13px;color:var(--dim);text-decoration:line-through;margin-left:8px;font-family:var(--body)}
+
+/* ---------- home ---------- */
+.topbar{display:flex;justify-content:space-between;align-items:center;height:44px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand b{font-family:var(--display);font-weight:400;font-size:24px;letter-spacing:.5px}
+.hero{display:flex;flex-direction:column;gap:10px}
+.hero{position:relative}
+.hero h1{font-family:var(--display);font-weight:400;font-size:76px;line-height:.88;letter-spacing:-.5px;text-transform:uppercase}
+.hero h1 .ln{display:block;width:max-content;max-width:100%;text-align:left;font:inherit;color:inherit;text-transform:inherit;letter-spacing:inherit;line-height:inherit;animation:letter .7s cubic-bezier(.2,.8,.2,1) both;position:relative}
+.hero h1 .ln:nth-child(2){animation-delay:.1s;margin-left:16%}
+.hero h1 .ln:nth-child(3){animation-delay:.2s;color:var(--mint);margin-left:auto}
+.hero h1{display:flex;flex-direction:column;align-items:flex-start}
+.hero p{text-align:right}
+.ch{display:inline-block;white-space:pre}
+.ln.jump .ch{animation:chJump .55s cubic-bezier(.3,1.6,.5,1) both;animation-delay:calc(var(--i) * 45ms)}
+.ln.jitter .ch{animation:chJitA .1s linear 10 alternate both}
+.ln.jitter .ch:nth-child(even){animation-name:chJitB}
+.ln.breaking .ch{animation:chBreak 1.2s cubic-bezier(.3,.7,.3,1) both;animation-delay:calc(var(--i) * 35ms)}
+.mhint{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);letter-spacing:1px}
+.mhint .tap{animation:bob 1.4s ease-in-out infinite;display:inline-block;color:var(--orange)}
+.stk{position:absolute;left:var(--x);top:var(--y);height:24px;padding:0 9px;border-radius:999px;font-size:11px;font-weight:900;display:flex;align-items:center;white-space:nowrap;pointer-events:none;z-index:4;animation:stkFly 1.2s cubic-bezier(.2,.8,.3,1) both}
+#mPop{position:absolute;inset:0;pointer-events:none;z-index:6}
+.mtip{position:absolute;pointer-events:auto;width:min(244px,calc(100% - 8px));background:rgba(20,20,20,.97);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid #2E2E2E;border-radius:16px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;box-shadow:0 12px 32px rgba(0,0,0,.55);animation:tipIn .28s cubic-bezier(.2,.9,.3,1.2) both;color:#fff;font-family:var(--body)}
+.mtip .k{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:900;letter-spacing:1.5px;color:var(--muted);padding-right:24px}
+.mtip .k i{width:6px;height:6px;border-radius:3px;background:var(--orange)}
+.mtip.fidget .k i{background:var(--mint)}
+.mtip.brk .k i{background:#fff}
+.mtip .t{font-size:13px;font-weight:700;line-height:1.5}
+.mtip .t.swap{animation:fadeUp .3s ease both}
+.mtip .r{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:28px}
+.mtip .r span{font-size:11px;color:var(--muted)}
+.mtip .bt{display:flex;gap:6px;flex-shrink:0}
+.mtip .b{height:28px;padding:0 12px;border-radius:999px;background:#fff;color:#000;font-size:12px;font-weight:900}
+.mtip.take .b{background:var(--orange)}
+.mtip.fidget .b{background:var(--mint)}
+.mtip .g{height:28px;padding:0 10px;border-radius:999px;border:1px solid #3A3A3A;font-size:12px;font-weight:700;color:var(--soft)}
+.mtip .x{position:absolute;top:5px;right:5px;width:26px;height:26px;border-radius:13px;display:flex;align-items:center;justify-content:center;color:var(--dim)}
+.mtip .x svg{width:13px;height:13px}
+.mring{position:relative;width:30px;height:30px;flex-shrink:0;display:inline-block}
+.mring svg{position:absolute;inset:0}
+.mring b{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:400;font-size:12px;color:#fff}
+.mtip .live2{display:flex;align-items:center;gap:8px}
+@keyframes tipIn{from{opacity:0;transform:translateY(-6px) scale(.92)}to{opacity:1;transform:none}}
+@keyframes chJump{0%{transform:none}35%{transform:translateY(-12px)}65%{transform:translateY(2px)}100%{transform:none}}
+@keyframes chJitA{0%{transform:rotate(-4deg)}100%{transform:rotate(4deg)}}
+@keyframes chJitB{0%{transform:rotate(4deg)}100%{transform:rotate(-4deg)}}
+@keyframes chBreak{0%{transform:none}30%,55%{transform:translateY(22px) rotate(var(--r));opacity:.5}100%{transform:none;opacity:1}}
+@keyframes stkFly{0%{transform:translate(0,0) scale(.4);opacity:0}20%{opacity:1;transform:translate(calc(var(--dx) * .4),calc(var(--dy) * .4)) scale(1.05)}100%{transform:translate(var(--dx),var(--dy)) scale(.9);opacity:0}}
+.hero p{margin-top:10px;font-size:15px;color:var(--soft);animation:fadeUp .6s ease .35s both}
+.marquee{background:var(--orange);color:#000;height:40px;overflow:hidden;display:flex;align-items:center;transform:rotate(-2deg);margin:0 -10px}
+.marquee div{display:flex;width:max-content;animation:marquee 14s linear infinite;font-family:var(--display);font-size:20px;letter-spacing:1px;white-space:nowrap}
+.marquee span{padding-right:28px}
+.next{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:12px;animation:fadeUp .6s ease .25s both}
+.next .figwrap{display:block}
+.figbtn{position:absolute;right:4px;top:50px;padding:0;z-index:2}
+.next .nm-main{padding-right:96px;display:flex;flex-direction:column;gap:12px}
+.figbtn .figwrap.boing{animation:boing .6s cubic-bezier(.3,1.6,.5,1)}
+.bubble{position:absolute;right:34px;top:-30px;background:#fff;color:#000;font-size:12px;font-weight:900;padding:7px 11px;border-radius:14px;white-space:nowrap;pointer-events:none;animation:popIn .3s ease both;z-index:3}
+.bubble::after{content:'';position:absolute;right:16px;bottom:-5px;width:10px;height:10px;background:#fff;transform:rotate(45deg);border-radius:2px}
+.bubble.hint{animation:popIn .3s ease both,bob 1.2s ease-in-out .3s infinite}
+.bubble.gone{opacity:0;transform:scale(.6);transition:opacity .2s ease,transform .2s ease}
+.next.flip{animation:flip .45s ease both}
+.tagrow2{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:1px;position:relative;z-index:3}
+.tagrow2 em{font-style:normal;background:var(--orange);color:#000;padding:4px 10px;border-radius:999px}
+.tagrow2 span{color:var(--soft)}
+.shuf{height:28px;padding:0 10px;border-radius:999px;border:1px solid #333;font-size:11px;font-weight:700;color:var(--soft);display:inline-flex;align-items:center;gap:4px}
+.shuf svg{transition:transform .4s ease}
+.shuf.spin svg{transform:rotate(360deg)}
+.clockbtn{display:flex;flex-direction:column;gap:4px;text-align:left;color:inherit}
+.clockbtn .lbl i{font-style:normal;opacity:.6;font-weight:500}
+.insight{display:none;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.insight.on{display:grid;animation:fadeUp .3s ease both}
+.insight div{background:rgba(255,255,255,.06);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.insight b{font-family:var(--display);font-weight:400;font-size:22px;line-height:1.1}
+.insight span{font-size:11px;opacity:.7}
+.sit.over .insight div{background:rgba(0,0,0,.12)}
+.sit.shake{animation:shake .5s ease}
+.sit .btn{position:relative}
+.mini{position:absolute;left:50%;top:50%;width:0;height:0;pointer-events:none}
+.mini span{position:absolute;left:0;top:0;width:0;height:0}
+.mini i{position:absolute;left:-4px;top:-4px;width:8px;height:8px;border-radius:50%;animation:miniBurst .7s cubic-bezier(.15,.7,.3,1) both}
+.tipcard{border:1px solid #2E5653;background:rgba(76,181,174,.07);border-radius:18px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;animation:fadeUp .5s ease .35s both}
+.tipcard .hd{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.tipcard .hd span{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--mint);letter-spacing:1px}
+.tipcard .x{width:32px;height:32px;border-radius:16px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.tipcard p{font-size:14px;font-weight:700;line-height:1.5}
+.tipcard p.swap{animation:fadeUp .35s ease both}
+.tipcard .ft{display:flex;justify-content:space-between;align-items:center}
+.tipcard .dots{display:flex;gap:5px}
+.tipcard .dots i{width:6px;height:6px;border-radius:3px;background:#2E5653;transition:width .25s ease,background .25s ease}
+.tipcard .dots i.on{width:16px;background:var(--mint)}
+.tipcard .nx{height:30px;padding:0 12px;border-radius:999px;background:var(--mint);color:#000;font-size:12px;font-weight:900;display:inline-flex;align-items:center;gap:4px}
+.marquee{cursor:pointer}
+.marquee.fast div{animation-duration:4s}
+.greet{display:flex;flex-direction:column;gap:2px}
+.greet small{font-size:12px;color:var(--muted);letter-spacing:1px}
+.greet b{font-size:17px;font-weight:900}
+@keyframes boing{0%{transform:none}30%{transform:translateY(-22px) rotate(-8deg) scale(1.05,.95)}60%{transform:translateY(0) scale(1.08,.9)}80%{transform:scale(.97,1.04)}100%{transform:none}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes flip{0%{transform:perspective(900px) rotateX(0)}50%{transform:perspective(900px) rotateX(70deg);opacity:.4}100%{transform:perspective(900px) rotateX(0)}}
+@keyframes shake{0%,100%{transform:none}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@keyframes miniBurst{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-46px) scale(.3);opacity:0}}
+@keyframes wig{0%,100%{transform:none}25%{transform:skewX(-12deg) translateX(6px)}50%{transform:skewX(8deg) translateX(-4px)}75%{transform:skewX(-4deg)}}
+.tag{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:1px}
+.tag em{font-style:normal;background:var(--orange);color:#000;padding:4px 10px;border-radius:999px}
+.tag span{color:var(--soft)}
+.sit{border-radius:28px;padding:20px;display:flex;flex-direction:column;gap:14px;background:var(--s1);color:#fff;transition:background .4s ease,color .4s ease}
+.sit .lbl{font-size:12px;letter-spacing:1px;font-weight:700;opacity:.75}
+.sit .clock{font-family:var(--display);font-size:52px;line-height:1;font-variant-numeric:tabular-nums}
+.sit .tgt{font-size:12px;font-weight:700;opacity:.8}
+.sit .track{height:10px;border-radius:5px;background:#262626;overflow:hidden}
+.sit .bar{height:10px;border-radius:5px;background-color:var(--mint);background-image:repeating-linear-gradient(45deg,rgba(0,0,0,.22) 0 7px,transparent 7px 14px);background-size:28px 10px;animation:stripes 1s linear infinite;transition:width .9s linear}
+.sit .btn{height:40px;padding:0 16px;border-radius:999px;background:#fff;color:#000;font-size:13px;font-weight:700;white-space:nowrap}
+.sit.over{background:var(--orange);color:#000}
+.sit.over .track{background:rgba(0,0,0,.2)}
+.sit.over .bar{background-color:#000}
+.sit.over .btn{background:#000;color:#fff}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stats div{border-top:2px solid #fff;padding-top:10px;display:flex;flex-direction:column;gap:4px}
+.stats div.o{border-color:var(--orange)}
+.stats b{font-family:var(--display);font-weight:400;font-size:40px;line-height:1}
+.stats div.o b{color:var(--orange)}
+.stats span{font-size:12px;color:var(--muted)}
+.rhythm{background:#0E0E0E;border:1px solid #1F1F1F;border-radius:24px;padding:18px 18px 14px;display:flex;flex-direction:column;gap:14px}
+.bars{height:92px;display:grid;grid-template-columns:repeat(9,1fr);gap:8px;align-items:end}
+.bars div{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;height:92px}
+.bars i{display:block;width:100%;border-radius:6px;transform-origin:bottom;animation:grow .7s cubic-bezier(.2,.8,.2,1) both;transition:height .5s ease}
+.bars span{font-size:10px;color:var(--dim)}
+.bars span.now{color:#fff}
+.hscroll{display:flex;gap:12px;overflow-x:auto;padding:0 20px;scrollbar-width:none}
+.scene{flex:0 0 auto;width:150px;height:180px;border-radius:24px;background:#141414;border:1px solid var(--line2);padding:16px;display:flex;flex-direction:column;justify-content:space-between;text-align:left}
+.scene.first{background:var(--mint);color:#000;border:none}
+.scene .n{font-family:var(--display);font-size:54px;line-height:.9;opacity:.9}
+.scene .e{font-family:var(--display);font-size:24px;line-height:1;display:block}
+.scene .z{font-size:13px;font-weight:700}
+.person{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #1A1A1A}
+.avatar{width:44px;height:44px;border-radius:22px;color:#000;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;flex-shrink:0}
+.person .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.person .t b{font-size:14px}
+.person .t span{font-size:12px;color:var(--muted)}
+.hi{height:40px;padding:0 14px;border-radius:999px;border:1px solid #333;font-size:13px;font-weight:700}
+.hi.done{background:var(--orange);color:#000;border-color:var(--orange)}
+
+/* ---------- moves (original layout) ---------- */
+.search{display:flex;align-items:center;gap:10px;height:50px;padding:0 16px;border-radius:999px;background:var(--s2);border:1px solid #262626}
+.search input{flex:1;min-width:0;background:transparent;border:none;outline:none;font-size:15px}
+.search input::placeholder{color:#8A8A8A}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{height:40px;padding:0 18px;border-radius:999px;border:1px solid #333;font-size:14px;font-weight:700;display:inline-flex;align-items:center;gap:6px;flex-shrink:0;white-space:nowrap}
+.chip.on{background:#fff;color:#000;border-color:#fff}
+.chip.ct::before{content:'';width:6px;height:6px;border-radius:3px;background:var(--mint)}
+.chip.ct.on::before{background:#000}
+.chip.new{border-style:dashed;border-color:#2E5653;color:var(--mint)}
+.week{background:var(--mint);color:#000;border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden}
+.week .ring{position:absolute;right:-30px;top:-30px;width:140px;height:140px;border-radius:70px;border:2px solid #000;animation:breathe 3s ease-in-out infinite}
+.week .t{font-family:var(--display);font-size:42px;line-height:.95;text-transform:uppercase}
+.week .days{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.week .days span{height:44px;border-radius:12px;background:#000;color:var(--mint);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:16px;animation:popIn .4s ease both}
+.libcard{border-radius:28px;background:var(--s1);border:1px solid var(--line);padding:20px;display:flex;align-items:center;gap:14px;text-align:left;width:100%}
+.libcard .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.libcard .tx b{font-family:var(--display);font-weight:400;font-size:30px;line-height:1;text-transform:uppercase}
+.libcard .tx span{font-size:13px;color:var(--muted)}
+.libcard .tx strong{font-size:15px}
+.libcard .figs{display:flex;gap:2px;flex-shrink:0}
+.libcard i{width:40px;height:40px;border-radius:20px;background:#fff;color:#000;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mrow{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid #1F1F1F;animation:fadeUp .4s ease both}
+.mrow .go{flex:1;min-width:0;display:flex;align-items:center;gap:14px;text-align:left}
+.mrow .no{font-family:var(--display);font-size:34px;color:var(--mint);width:44px;flex-shrink:0}
+.mrow .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.mrow .tx b{font-size:16px}
+.mrow .tx span{font-size:12px;color:var(--muted)}
+.mrow .mn{font-family:var(--display);font-size:18px;flex-shrink:0}
+.fav{color:var(--muted)}
+.fav.on{color:var(--orange)}
+.empty{padding:28px 0;color:var(--muted);font-size:14px;line-height:1.7}
+.addmore{height:52px;border-radius:18px;border:1.5px dashed #2E5653;color:var(--mint);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;width:100%}
+.playall{height:34px;padding:0 14px;border-radius:999px;background:var(--orange);color:#000;font-size:12px;font-weight:900;display:inline-flex;align-items:center;gap:6px;flex-shrink:0}
+
+/* ---------- library page ---------- */
+.lib{position:absolute;inset:0;z-index:15;background:#000;overflow-y:auto;scrollbar-width:none;animation:slideIn .35s cubic-bezier(.2,.8,.2,1) both}
+.lib .page{padding-bottom:40px;gap:18px}
+.libtop{display:flex;justify-content:space-between;align-items:center}
+.back{display:flex;align-items:center;gap:4px;height:44px;padding:0 14px 0 8px;border-radius:22px;border:1px solid var(--line2);font-size:14px;font-weight:700}
+.scrollx{display:flex;gap:8px;overflow-x:auto;margin:0 -20px;padding:0 20px;scrollbar-width:none}
+.target{background:var(--s1);border:1px solid var(--line);border-radius:22px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.target .lb{font-size:12px;color:var(--muted);letter-spacing:1px;display:flex;justify-content:space-between}
+.target .lb b{color:var(--mint);font-weight:700}
+.target .scrollx{margin:0 -16px;padding:0 16px}
+.target .chip{height:36px;padding:0 14px;font-size:13px}
+.target .chip.on{background:var(--mint);border-color:var(--mint);color:#000}
+.lrow{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #1A1A1A}
+.lrow .go{flex:1;min-width:0;display:flex;align-items:center;gap:12px;text-align:left}
+.thumb{width:58px;height:58px;border-radius:16px;background:#0E0E0E;border:1px solid #1E1E1E;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
+.thumb .no{position:absolute;left:5px;top:3px;font-family:var(--display);font-size:10px;color:#5A5A5A}
+.lrow .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.lrow .tx b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lrow .tx span{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.addbtn{height:36px;min-width:72px;padding:0 12px;border-radius:999px;background:#fff;color:#000;font-size:13px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:4px;flex-shrink:0}
+.addbtn.on{background:transparent;border:1px solid var(--mint);color:var(--mint)}
+
+/* ---------- gear ---------- */
+.bagbadge{position:absolute;top:-3px;right:-3px;min-width:22px;height:22px;border-radius:11px;background:var(--orange);color:#000;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;animation:bump .45s ease both}
+.kit{border-radius:28px;background:var(--s1);border:1px solid var(--line);overflow:hidden;text-align:left;display:flex;flex-direction:column}
+.kit .img{height:200px;width:100%;background:var(--orange);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.kit .wm{position:absolute;left:-20px;bottom:-14px;font-family:var(--display);font-size:120px;line-height:1;color:#000;opacity:.12;white-space:nowrap}
+.kit .new{position:absolute;left:16px;top:16px;background:#000;color:var(--orange);font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px}
+.kit .body{padding:18px 18px 20px;display:flex;flex-direction:column;gap:8px}
+.kit .en{font-family:var(--display);font-size:30px;line-height:1;text-transform:uppercase}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.prod{display:flex;flex-direction:column;gap:8px;animation:fadeUp .45s ease both}
+.prod .pic{height:168px;border-radius:22px;background:var(--s2);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.prod .pic small{position:absolute;left:10px;top:10px;font-family:var(--display);font-size:12px;color:#6A6A6A;letter-spacing:1px}
+.prod .meta{display:flex;justify-content:space-between;align-items:flex-start;gap:6px}
+.prod .meta div{display:flex;flex-direction:column;gap:3px;min-width:0}
+.prod .meta b{font-size:14px}
+.prod .meta span{font-size:12px;color:var(--muted)}
+.prod .meta .price{font-size:18px;margin-top:2px;color:#fff}
+.add{width:40px;height:40px;border-radius:20px;background:#fff;color:#000;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.add.on{background:var(--mint)}
+.eap{border-radius:24px;background:var(--mint);color:#000;padding:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left}
+.eap b{font-family:var(--display);font-weight:400;font-size:24px;text-transform:uppercase;display:block}
+.eap span{font-size:14px;font-weight:700}
+.eap i{width:48px;height:48px;border-radius:24px;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* ---------- me ---------- */
+.me-head{display:flex;align-items:center;gap:14px}
+.me-av{width:64px;height:64px;border-radius:32px;background:var(--mint);color:#000;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-size:28px;position:relative;flex-shrink:0}
+.me-av::after{content:'';position:absolute;inset:-4px;border-radius:40px;border:2px solid var(--mint);animation:ping 2s ease-out infinite}
+.level{border-radius:28px;background:var(--orange);color:#000;padding:22px;display:flex;flex-direction:column;gap:12px;animation:fadeUp .5s ease both}
+.level .big{font-family:var(--display);font-size:80px;line-height:.9;text-transform:uppercase}
+.level .track{height:10px;border-radius:5px;background:rgba(0,0,0,.18);overflow:hidden}
+.level .track i{display:block;height:10px;background:#000;border-radius:5px;transition:width .8s ease}
+.days7{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.days7 div{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.days7 .c{width:40px;height:40px;border-radius:20px;display:flex;align-items:center;justify-content:center}
+.days7 .c.done{background:var(--mint);color:#000;animation:popIn .4s ease both}
+.days7 .c.today{border:2px solid var(--orange);color:var(--orange);font-family:var(--display);font-size:15px}
+.days7 .c.future{border:1px dashed #3A3A3A}
+.days7 .now{color:#fff;font-weight:700}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.bdg{height:116px;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-size:12px;font-weight:700;animation:popIn .4s ease both}
+.bdg.on{background:var(--s1);border:1px solid var(--line2)}
+.bdg.off{border:1px dashed #333;color:var(--dim)}
+.setbox{border-radius:22px;background:var(--s1);border:1px solid var(--line)}
+.set{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:64px;padding:10px 18px;border-bottom:1px solid #1E1E1E}
+.set div{display:flex;flex-direction:column;gap:2px}
+.set b{font-size:15px}
+.set span{font-size:12px;color:var(--muted)}
+.switch{width:52px;height:32px;border-radius:16px;background:#3A3A3A;position:relative;flex-shrink:0;transition:background .2s ease}
+.switch::after{content:'';position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:13px;background:#fff;transition:left .2s ease}
+.switch[aria-checked="true"]{background:var(--mint)}
+.switch[aria-checked="true"]::after{left:23px}
+.ivals{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ival{height:44px;border-radius:14px;border:1px solid #333;font-family:var(--display);font-size:18px}
+.ival.on{background:#fff;color:#000;border-color:#fff}
+
+/* ---------- promo: widgets & apple watch ---------- */
+.newbar{display:flex;align-items:center;gap:12px;min-height:58px;padding:10px 16px;border-radius:20px;background:#121212;border:1px solid #222;text-align:left;animation:fadeUp .5s ease .3s both}
+.newbar .tg{height:22px;padding:0 8px;border-radius:999px;background:var(--orange);color:#000;font-size:10px;font-weight:900;letter-spacing:1px;display:flex;align-items:center;flex-shrink:0}
+.newbar .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.newbar .tx b{font-size:14px;font-weight:900}
+.newbar .tx span{font-size:12px;color:var(--muted)}
+.newbar .ic{display:flex;gap:6px;color:var(--mint);flex-shrink:0}
+.promo{position:absolute;inset:0;z-index:15;background:#000;overflow-y:auto;scrollbar-width:none;animation:slideIn .35s cubic-bezier(.2,.8,.2,1) both}
+.promo::-webkit-scrollbar{display:none}
+.promo .page{gap:26px;padding-bottom:48px}
+.promo .libtop{position:sticky;top:0;z-index:5;margin:-10px -20px;padding:10px 20px;background:rgba(0,0,0,.92);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.ptitle{font-family:var(--display);font-weight:400;font-size:64px;line-height:.9;text-transform:uppercase}
+.ptitle span{color:var(--mint)}
+.plead{font-size:15px;color:var(--soft);line-height:1.6}
+.psec{display:flex;flex-direction:column;gap:14px}
+.psec .no{font-family:var(--display);font-size:14px;color:var(--orange);letter-spacing:1px}
+.psec h2{font-family:var(--display);font-weight:400;font-size:36px;line-height:.95;text-transform:uppercase}
+.psec h2 small{display:block;font-family:var(--body);font-size:14px;font-weight:900;margin-top:6px;letter-spacing:0;text-transform:none}
+.homemock{border-radius:30px;background:#0C0C0C;border:1px solid #1F1F1F;padding:16px 14px 18px;display:flex;flex-direction:column;gap:12px;background-image:radial-gradient(#1A1A1A 1px,transparent 1px);background-size:14px 14px}
+.hmtop{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:var(--soft);padding:0 4px}
+.wgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.wgt{border-radius:22px;background:#000;border:1px solid #262626;padding:12px;display:flex;flex-direction:column;transition:opacity .25s ease,transform .25s ease;position:relative;text-align:left}
+.wgt.dim{opacity:.25;transform:scale(.97)}
+.wgt.sq{aspect-ratio:1}
+.wgt.wide{grid-column:span 2;flex-direction:row;align-items:center;gap:12px;min-height:150px}
+.wgt.big{grid-column:span 2;gap:10px}
+.wgt.wov{background:var(--orange);border-color:var(--orange);color:#000}
+.wk{display:flex;justify-content:space-between;align-items:center;font-size:10px;font-weight:700;color:var(--muted)}
+.wgt.wov .wk{color:#000}
+.wn{font-family:var(--display);font-size:52px;line-height:.9}
+.wbar{height:5px;border-radius:3px;background:#262626;overflow:hidden}
+.wbar i{display:block;height:5px;background:var(--mint);border-radius:3px;transition:width 1s linear}
+.wsm{font-size:10px;color:var(--soft)}
+.wbtn{height:28px;border-radius:14px;background:#000;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:4px;width:100%}
+.wbtn.o{background:var(--orange);color:#000;width:auto;padding:0 12px}
+.wring{position:relative;width:104px;height:104px;flex-shrink:0;display:flex;align-items:center;justify-content:center;flex-direction:column}
+.wring svg{position:absolute;inset:0}
+.wring b{font-family:var(--display);font-weight:400;font-size:30px;line-height:1;position:relative}
+.wring > span{font-size:9px;color:var(--muted);position:relative}
+.wrun{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.wrun > svg{position:absolute;inset:0}
+.wqm{display:flex;align-items:center;gap:8px;height:38px;padding:0 4px 0 10px;border-radius:12px;background:#141414}
+.wqm b{font-family:var(--display);font-weight:400;font-size:14px;color:var(--mint);width:20px}
+.wqm span{flex:1;min-width:0;font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wqm button{width:30px;height:30px;border-radius:15px;background:#fff;color:#000;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.wbars{height:44px;display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:4px;align-items:end}
+.wbars i{display:block;border-radius:3px}
+.wcap{font-size:11px;color:var(--muted);text-align:center;margin-top:6px}
+.sizes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--s2);border:1px solid #262626;border-radius:999px;padding:4px}
+.sizes button{height:36px;border-radius:999px;font-size:13px;font-weight:700;color:var(--muted)}
+.sizes button.on{background:#fff;color:#000}
+.howto{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.howto div{border-radius:16px;background:#111;border:1px solid #1E1E1E;padding:12px 10px;display:flex;flex-direction:column;gap:6px}
+.howto b{font-family:var(--display);font-weight:400;font-size:20px;color:var(--orange)}
+.howto span{font-size:12px;line-height:1.45;color:var(--soft)}
+.watchstage{display:flex;flex-direction:column;align-items:center;gap:14px;padding:6px 0}
+.wband{width:118px;height:34px;background:#161616;border:1px solid #222;background-image:repeating-linear-gradient(90deg,#1C1C1C 0 5px,#161616 5px 10px)}
+.wband.t{border-radius:0 0 14px 14px;border-top:none}
+.wband.b{border-radius:14px 14px 0 0;border-bottom:none}
+.wcase{position:relative;width:184px;height:224px;border-radius:50px;background:#1A1A1A;border:2px solid #2E2E2E;padding:11px;box-shadow:inset 0 0 0 4px #0D0D0D}
+.wcrown{position:absolute;right:-11px;top:56px;width:12px;height:36px;border-radius:5px;border:1px solid #3A3A3A;background-color:#262626;background-image:repeating-linear-gradient(180deg,#333 0 2px,#262626 2px 4px);padding:0}
+.wbtn2{position:absolute;right:-6px;top:110px;width:6px;height:40px;border-radius:3px;background:#262626;border:1px solid #333}
+.wscr{position:relative;width:100%;height:100%;border-radius:40px;background:#000;overflow:hidden;color:#fff}
+.ws{position:absolute;inset:0;padding:16px 14px 14px;display:flex;flex-direction:column;animation:wsIn .35s ease both}
+.ws .t1{display:flex;justify-content:space-between;font-size:10px;font-weight:900;letter-spacing:.5px}
+.ws .big{font-family:var(--display);font-weight:400;line-height:.86}
+.ws .row{display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto}
+.ws.or{background:var(--orange);color:#000}
+.wdots{display:flex;gap:8px}
+.wdots button{width:44px;height:28px;display:flex;align-items:center;justify-content:center;padding:0}
+.wdots button i{width:8px;height:8px;border-radius:4px;background:#333;transition:width .25s ease,background .25s ease}
+.wdots button.on i{width:22px;background:var(--orange)}
+.wcapt{font-size:13px;font-weight:700;color:var(--soft);min-height:20px;text-align:center}
+.feats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.feat{border-radius:18px;background:#111;border:1px solid #1E1E1E;padding:14px;display:flex;flex-direction:column;gap:6px;animation:fadeUp .45s ease both}
+.feat i{width:34px;height:34px;border-radius:17px;display:flex;align-items:center;justify-content:center;color:#000}
+.feat b{font-size:14px;font-weight:900}
+.feat span{font-size:12px;color:var(--muted);line-height:1.45}
+.pcta{display:flex;flex-direction:column;gap:10px}
+.pcta .main{height:56px;border-radius:999px;background:#fff;color:#000;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:8px}
+.pcta .sub{height:52px;border-radius:999px;border:1px solid #333;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px}
+.pcta .sub.on{border-color:var(--mint);color:var(--mint)}
+.pnote{font-size:11px;color:var(--dim);text-align:center;line-height:1.6}
+.pair{display:flex;flex-direction:column;align-items:center;gap:14px;padding:8px 0 4px;text-align:center}
+.pair .spin{width:72px;height:72px;border-radius:36px;border:4px solid #262626;border-top-color:var(--mint);animation:spin 1s linear infinite}
+.pair .ok{width:72px;height:72px;border-radius:36px;background:var(--mint);color:#000;display:flex;align-items:center;justify-content:center;animation:popIn .4s ease both}
+.pair .dev{width:100%;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:#1C1C1C;text-align:left;animation:fadeUp .3s ease both}
+.pair .dev span{flex:1;display:flex;flex-direction:column;gap:2px}
+.pair .dev b{font-size:15px}
+.pair .dev small{font-size:12px;color:var(--muted)}
+.pair .prog{width:100%;height:6px;border-radius:3px;background:#262626;overflow:hidden}
+.pair .prog i{display:block;height:6px;width:0;background:var(--mint);border-radius:3px;animation:fillw 1.6s ease forwards}
+.demo{display:inline-flex;height:20px;padding:0 8px;border-radius:999px;border:1px solid #444;color:var(--muted);font-size:10px;font-weight:700;align-items:center;letter-spacing:1px}
+@keyframes wsIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fillw{to{width:100%}}
+
+/* ---------- overlays ---------- */
+.ov{position:absolute;inset:0;z-index:20}
+#overlay2 .ov{z-index:30}
+.backdrop{position:absolute;inset:0;background:rgba(0,0,0,.6);animation:fadeIn .25s ease both;width:100%}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:#141414;border-radius:28px 28px 0 0;padding:12px 20px calc(32px + var(--sab));display:flex;flex-direction:column;gap:16px;animation:slideUp .35s cubic-bezier(.2,.8,.2,1) both}
+.sheet .grab{align-self:center;width:40px;height:5px;border-radius:3px;background:#3A3A3A}
+.sheet .img{height:150px;border-radius:22px;color:#000;display:flex;align-items:flex-end;padding:16px}
+.sheet .img b{font-family:var(--display);font-weight:400;font-size:52px;line-height:.9;text-transform:uppercase}
+.sheet h3{font-size:22px;font-weight:900}
+.sheet .sub{font-size:13px;color:var(--muted);line-height:1.6}
+.mvchips{display:flex;gap:8px;flex-wrap:wrap}
+.mvchips span,.idea{height:32px;padding:0 12px;border-radius:999px;border:1px solid #333;display:flex;align-items:center;font-size:13px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.two button{height:54px;border-radius:999px;font-size:15px;font-weight:900;display:flex;align-items:center;justify-content:center;gap:8px}
+.field input{width:100%;height:54px;border-radius:16px;background:#0C0C0C;border:1px solid #333;padding:0 16px;font-size:16px;outline:none}
+.field input:focus{border-color:var(--mint)}
+
+.session{background:#000;padding:calc(24px + var(--sat)) 20px calc(20px + var(--sab));display:flex;flex-direction:column;gap:clamp(10px,2.2vh,20px);overflow-y:auto;scrollbar-width:none;animation:slideUp .45s cubic-bezier(.2,.8,.2,1) both}
+.session header{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.session header .ttl{font-size:13px;font-weight:700;letter-spacing:1px;text-align:center;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mode{height:32px;padding:0 12px;border-radius:999px;background:var(--s2);border:1px solid #262626;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mint);font-weight:700;flex-shrink:0}
+.segs{display:grid;gap:6px}
+.segs div{height:4px;border-radius:2px;background:#262626;overflow:hidden}
+.segs i{display:block;height:4px;transition:width 1s linear}
+.stagebox{flex:1 1 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(8px,1.8vh,18px);min-height:0}
+.dial{position:relative;width:min(290px,70vw,38vh);aspect-ratio:1;flex-shrink:0}
+.dial .glow{position:absolute;inset:4%;border-radius:50%;background:var(--mint);animation:breathe 4s ease-in-out infinite}
+.dial svg.r{position:absolute;inset:0;width:100%;height:100%}
+.dial .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.dial .t{font-family:var(--display);font-size:clamp(40px,7.5vh,66px);line-height:1;font-variant-numeric:tabular-nums}
+.dial .s{font-size:12px;color:var(--soft);letter-spacing:2px}
+#sesFig{animation:popIn .4s ease both}
+#sesFig svg{width:clamp(56px,11vh,100px);height:auto}
+.mv{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;flex-shrink:0}
+.mv h2{font-size:clamp(20px,3vh,26px);font-weight:900}
+.mv p{font-size:14px;color:var(--soft);max-width:310px;line-height:1.5}
+.mv.swap{animation:fadeUp .4s ease both}
+.ctrls{display:flex;align-items:center;justify-content:center;gap:28px;flex-shrink:0}
+.ctrls .sm{width:56px;height:56px;border-radius:28px;border:1px solid var(--line2);display:flex;align-items:center;justify-content:center}
+.ctrls .lg{width:clamp(64px,10vh,84px);height:clamp(64px,10vh,84px);border-radius:50%;background:#fff;color:#000;display:flex;align-items:center;justify-content:center}
+.upnext{flex-shrink:0;background:var(--s1);border:1px solid var(--line);border-radius:20px;padding:12px 16px;display:flex;align-items:center;gap:12px}
+.upnext small{font-size:12px;color:var(--muted)}
+.upnext b{flex:1;font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.upnext span{font-family:var(--display);font-size:16px;color:var(--mint)}
+.session.paused *{animation-play-state:paused !important}
+
+.done{background:var(--orange);color:#000;padding:calc(var(--top) + var(--sat)) 20px calc(32px + var(--sab));display:flex;flex-direction:column;gap:20px;overflow:hidden;animation:fadeIn .3s ease both}
+.burst{position:absolute;left:50%;top:38%;width:0;height:0;pointer-events:none}
+.burst .rg{position:absolute;left:-90px;top:-90px;width:180px;height:180px;border-radius:90px;border:3px solid #000;animation:ringOut 1.2s ease-out both}
+.burst .rg.w{border-color:#fff;animation-delay:.25s}
+.burst .p{position:absolute;left:0;top:0;width:0;height:0}
+.burst .p i{position:absolute;left:-6px;top:-6px;display:block;animation:burst 1.2s cubic-bezier(.15,.7,.3,1) both}
+.done{overflow-y:auto}
+.done .big{font-family:var(--display);font-size:clamp(60px,11vh,96px);line-height:.86;text-transform:uppercase;animation:letter .7s cubic-bezier(.2,.8,.2,1) .2s both}
+.done .mid{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;position:relative}
+.done .stats div{border-color:#000}
+.done .stats b{font-size:34px}
+.done .stats span{color:#000;font-weight:700}
+.unlock{margin-top:10px;background:#000;color:#fff;border-radius:22px;padding:16px;display:flex;align-items:center;gap:14px;animation:popIn .5s ease .9s both}
+.unlock i{width:52px;height:52px;border-radius:26px;background:var(--orange);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+.toast{position:absolute;left:50%;top:calc(var(--top) + var(--sat));z-index:40;transform:translateX(-50%);max-width:340px;background:#fff;color:#000;border-radius:999px;padding:12px 18px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;white-space:nowrap;animation:toastIn .3s ease both;pointer-events:none}
+.toast::before{content:'';width:8px;height:8px;border-radius:4px;background:var(--mint);flex-shrink:0}
+
+/* ---------- motion figure: the original seated stick figure, a motion per move ---------- */
+.of .h{transform-origin:78px 56px}
+.of .ar{transform-origin:77px 70px}
+.of .kk{transform-origin:72px 104px}
+.of .ub{transform-origin:72px 104px}
+.of .all{transform-origin:72px 150px}
+.of-orig .h{animation:tilt 2.6s ease-in-out infinite}
+.of-orig .ar{animation:swing 2.6s ease-in-out infinite}
+.of-orig .kk{animation:kick .45s ease-in-out infinite}
+.of-tilt .h{animation:tilt 2.4s ease-in-out infinite}
+.of-nod .h{animation:oNod 2.4s ease-in-out infinite}
+.of-turn .h{animation:oTurn 2.8s ease-in-out infinite}
+.of-shrug .ar{animation:oShrug 1.6s ease-in-out infinite}
+.of-roll .ar{animation:oRoll 2s linear infinite}
+.of-squeeze .ar{animation:oSqz 2s ease-in-out infinite}
+.of-reach .ar{animation:oReach 2.4s ease-in-out infinite}
+.of-wrist .ar{animation:oWiggle .5s ease-in-out infinite}
+.of-grip .ar{animation:oWiggle .7s ease-in-out infinite}
+.of-bounce .kk{animation:kick .32s ease-in-out infinite}
+.of-ext .kk{animation:oExt 2s ease-in-out infinite}
+.of-ankle .kk{animation:oAnk .9s ease-in-out infinite}
+.of-calf .all{animation:oCalf 1.4s ease-in-out infinite}
+.of-squat .all{animation:oSquat 2.2s ease-in-out infinite}
+.of-march .kk{animation:kick .9s ease-in-out infinite}
+.of-march .ar{animation:swing .9s ease-in-out infinite}
+.of-side .ub{animation:oSide 2.6s ease-in-out infinite}
+.of-twist .ub{animation:oTwist 2.4s ease-in-out infinite}
+.of-pelvic .ub{animation:oPelvic 2s ease-in-out infinite}
+.of-breathe .ub{animation:oBreathe 4s ease-in-out infinite}
+.of-eye .h{animation:oEye 2.4s ease-in-out infinite}
+@keyframes tilt{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(14deg)}}
+@keyframes swing{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(16deg)}}
+@keyframes kick{0%,100%{transform:rotate(0)}50%{transform:rotate(-18deg)}}
+@keyframes oNod{0%,100%{transform:translate(0,0)}50%{transform:translate(2px,7px)}}
+@keyframes oTurn{0%,50%,100%{transform:scaleX(1)}25%,75%{transform:scaleX(.6)}}
+@keyframes oShrug{0%,100%{transform:translateY(0)}45%,60%{transform:translateY(-9px)}}
+@keyframes oRoll{0%,100%{transform:translate(0,0)}25%{transform:translate(4px,-4px)}50%{transform:translate(0,-8px)}75%{transform:translate(-4px,-4px)}}
+@keyframes oSqz{0%,100%{transform:rotate(0)}50%{transform:rotate(-28deg)}}
+@keyframes oReach{0%,100%{transform:rotate(10deg)}50%{transform:rotate(-70deg)}}
+@keyframes oWiggle{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+@keyframes oExt{0%,25%,100%{transform:rotate(0)}50%,75%{transform:rotate(-48deg)}}
+@keyframes oAnk{0%,100%{transform:rotate(2deg)}50%{transform:rotate(-8deg)}}
+@keyframes oCalf{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes oSquat{0%,100%{transform:translateY(0)}50%{transform:translateY(12px)}}
+@keyframes oSide{0%,100%{transform:rotate(0)}50%{transform:rotate(-14deg)}}
+@keyframes oTwist{0%,100%{transform:scaleX(1)}25%,75%{transform:scaleX(.72)}50%{transform:scaleX(1)}}
+@keyframes oPelvic{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(5deg)}}
+@keyframes oBreathe{0%,100%{transform:scale(1)}45%,60%{transform:scale(1.05) translateY(-2px)}}
+@keyframes oEye{0%,100%{transform:translate(0,0)}25%{transform:translate(-3px,0)}50%{transform:translate(0,-3px)}75%{transform:translate(3px,0)}}
+
+/* ---------- ui motion ---------- */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
+@keyframes slideIn{from{transform:translateX(100%)}to{transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes marquee{to{transform:translateX(-50%)}}
+@keyframes ping{0%{transform:scale(1);opacity:.55}100%{transform:scale(1.7);opacity:0}}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes stripes{to{background-position:28px 0}}
+@keyframes burst{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-170px) scale(.3);opacity:0}}
+@keyframes ringOut{0%{transform:scale(.4);opacity:.9}100%{transform:scale(2.2);opacity:0}}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:.35}50%{transform:scale(1.08);opacity:.08}}
+@keyframes bump{0%{transform:scale(1)}40%{transform:scale(1.4)}100%{transform:scale(1)}}
+@keyframes blink{50%{opacity:.2}}
+@keyframes letter{from{opacity:0;transform:translateY(48px) skewY(8deg)}to{opacity:1;transform:none}}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,-14px)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes popIn{0%{opacity:0;transform:scale(.6)}70%{transform:scale(1.08)}100%{opacity:1;transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}}
+</style>
+</head>
+<body>
+<div class="stage">
+  <aside class="intro">
+    <span class="k">FIDGETFIT · 轻弹玩家 · APP</span>
+    <h1>Desk is<br>your <span>gym.</span></h1>
+    <p>首个专注于职场久坐族的微运动潮流品牌。把工位变成健身房，把焦虑变成多巴胺。</p>
+    <div class="sw"><i style="background:#4CB5AE"></i><i style="background:#FF8A5C"></i><i style="background:#F4F4F6"></i><i style="background:#2B2D42"></i></div>
+    <ul>
+      <li>点「开始微动」体验完整跟练</li>
+      <li>中间橙色按钮随机开练</li>
+      <li>「动作」页进入 100 个动作库，可添加到列表</li>
+      <li>首页「NEW」入口：桌面小组件 & Apple Watch 介绍</li>
+      <li>装备可加购、设置可开关</li>
+    </ul>
+  </aside>
+
+  <div class="phone" id="phone">
+    <main id="view" class="view"></main>
+    <nav class="tabbar" aria-label="主导航">
+      <button class="tab press" data-act="tab" data-arg="home"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/></svg>今日<i class="dot"></i></button>
+      <button class="tab press" data-act="tab" data-arg="moves"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>动作<i class="dot"></i></button>
+      <button class="fab press" data-act="quick" aria-label="开始随机微动"><span><svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span>微动</button>
+      <button class="tab press" data-act="tab" data-arg="gear"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1 13H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>装备<i class="dot"></i></button>
+      <button class="tab press" data-act="tab" data-arg="me"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>我的<i class="dot"></i></button>
+    </nav>
+    <div id="libWrap"></div>
+    <div id="overlay"></div>
+    <div id="overlay2"></div>
+    <div id="toastWrap"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var C = 829;
+  var NICK = '抖腿星人 Momo';
+
+  // ---------- icons ----------
+  var I = {
+    arrow: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>',
+    back: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg>',
+    check: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>',
+    checkS: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>',
+    plus: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
+    plusS: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
+    play: '<svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>',
+    playS: '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg>',
+    pause: '<svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>',
+    prev: '<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h2v14H7z"/><path d="M19 5v14L10 12z"/></svg>',
+    next: '<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15 5h2v14h-2z"/><path d="M5 5v14l9-7z"/></svg>',
+    close: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12"/><path d="M18 6 6 18"/></svg>',
+    bell: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 8 2.5 8h-17S6 15 6 9z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg>',
+    search: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9A9A9A" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
+    bag: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1 13H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>',
+    heart: '<svg width="18" height="18" viewBox="0 0 24 24" fill="FILL" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.5-9-9a4.5 4.5 0 0 1 9-3 4.5 4.5 0 0 1 9 3c-2 4.5-9 9-9 9z"/></svg>',
+    lock: '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+    watch: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="3.5"/><path d="M9 6V3h6v3M9 18v3h6v-3"/></svg>',
+    grid: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="17" height="7" rx="2"/></svg>',
+    boltB: '<svg width="26" height="26" viewBox="0 0 24 24" fill="#000" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>'
+  };
+  function heart(on) { return I.heart.replace('FILL', on ? 'currentColor' : 'none'); }
+  var PICS = {
+    ring: '<svg width="78" height="78" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4.5"/></svg>',
+    pedal: '<svg width="78" height="78" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16c3-1 5-6 8-6s5 5 8 6"/><path d="M4 19h16"/><path d="M12 10V5"/></svg>',
+    pad: '<svg width="78" height="78" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><path d="M6 5c-1 4-1 10 0 14"/><path d="M6 5c4 0 9 1 12 3v8c-3 2-8 3-12 3"/></svg>',
+    ball: '<svg width="78" height="78" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><path d="M8 9.5h.01M12 8h.01M16 9.5h.01M9 13.5h.01M15 13.5h.01M12 16h.01" stroke-width="2.4"/></svg>',
+    pillow: '<svg width="78" height="78" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><path d="M5 9a7 7 0 0 0 14 0"/><path d="M3 9a9 9 0 0 0 18 0"/><path d="M3 9h2M19 9h2"/></svg>',
+    band: '<svg width="78" height="78" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><path d="M4 8c4 3 12 3 16 0"/><path d="M4 16c4-3 12-3 16 0"/><path d="M4 8v8M20 8v8"/></svg>'
+  };
+  var BADGE_ICON = {
+    neck: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#4CB5AE" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="6" r="3"/><path d="M12 9v6"/><path d="M8 21l4-6 4 6"/></svg>',
+    power: '<svg width="40" height="40" viewBox="0 0 24 24" fill="#FF8A5C" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>',
+    leg: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#4CB5AE" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3 12c2-4 4-4 6 0s4 4 6 0 4-4 6 0"/></svg>'
+  };
+
+  // ---------- motion figure (original seated stick figure) ----------
+  var STAND = { calf: 1, squat: 1, march: 1, side: 1 };
+  function fig(anim, size, color, sw, noChair) {
+    color = color || '#4CB5AE'; sw = sw || 4;
+    var chair = noChair ? '' : '<path d="M44 108h52" stroke="#2F2F2F"/><path d="M50 108v44M90 108v44" stroke="#2F2F2F"/>';
+    return '<svg class="of of-' + anim + '" width="' + size + '" height="' + Math.round(size * 170 / 150) + '" viewBox="0 0 150 170" fill="none" stroke="' + color + '" stroke-width="' + sw + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + chair +
+      '<g class="all"><g class="ub"><g class="h"><circle cx="82" cy="34" r="15"/></g><path d="M80 54 L72 104"/>' +
+      '<g class="ar"><path d="M77 70 L46 58"/><path d="M77 72 L106 88"/></g></g>' +
+      '<path d="M72 104 L54 150"/><g class="kk"><path d="M72 104 L104 120 L102 150"/></g></g></svg>';
+  }
+  var CUE = {
+    tilt: '耳朵慢慢靠近肩膀，另一侧颈部有拉伸感，左右交替。', nod: '下巴向锁骨方向收，后颈拉长，再慢慢抬回正中。',
+    turn: '肩膀不动，头慢慢转向一侧看到极限，回正再换边。', shrug: '吸气时双肩耸向耳朵，呼气时重重放下，感受肩膀变轻。',
+    roll: '肩膀向前、向上、向后画大圈，动作越慢越放松。', squeeze: '双肘向后打开，像要夹住背后的一支笔，停 2 秒再放松。',
+    reach: '双臂向上伸到最高点，吸气延展，呼气慢慢放下。', wrist: '双手向前伸，手腕顺时针、逆时针各转几圈。',
+    grip: '用力握拳 2 秒，再把五指全部张开，跟着节拍重复。', bounce: '脚尖着地，膝盖快速小幅弹动，把抖腿变成训练。',
+    ext: '坐稳后单腿向前伸直，停 2 秒，左右交替。', ankle: '脚尖画圈或勾脚绷脚，让脚踝和小腿血液流动起来。',
+    calf: '双脚并拢，慢慢踮起脚尖到最高点，再慢慢落下。', squat: '双脚与肩同宽，臀部向后坐，双手前平举，再站起。',
+    march: '原地交替抬膝，手臂自然摆动，保持呼吸节奏。', side: '一侧手臂上举，身体向另一侧弯，感受侧腰被拉长。',
+    twist: '坐直后上半身转向一侧，手扶椅背，保持呼吸再换边。', pelvic: '骨盆前后慢慢摇动，腰背跟着弯曲、伸展。',
+    breathe: '鼻吸 4 拍让腹部鼓起，屏住 4 拍，嘴呼 6 拍。', eye: '头不动，眼球依次看向左、上、右、下，再闭眼休息。'
+  };
+
+  // ---------- data: 100-move library ----------
+  var SCN = { d: '工位', c: '通勤', m: '会议', t: '差旅', h: '居家' };
+  var PARTS = ['颈肩', '手腕', '腰背', '下肢', '眼部', '呼吸', '全身'];
+  var RAW = [
+    '颈部唤醒|tilt|颈肩|dm|2', '侧颈拉伸|tilt|颈肩|dmt|1', '下巴找锁骨|nod|颈肩|dm|1', '慢速转头|turn|颈肩|dmt|1', '收下巴抗前倾|nod|颈肩|dmc|1',
+    '耸肩放松|shrug|颈肩|dmct|1', '肩部绕环|roll|颈肩|dt|1', '肩胛后夹|squeeze|颈肩|dm|1', '斜方肌拉伸|tilt|颈肩|d|2', '抱头低头拉伸|nod|颈肩|dh|2',
+    '颈部米字操|turn|颈肩|dh|3', '肩胛画圈|roll|颈肩|d|2', '胸前开肩|squeeze|颈肩|dh|2', '上举够天花板|reach|颈肩|dh|1', '侧向够远|side|颈肩|dh|2',
+    '天鹅颈回正|nod|颈肩|d|1', '头部画半圆|tilt|颈肩|dt|1', '双肩下沉|shrug|颈肩|m|1', '颈枕拉伸|tilt|颈肩|t|3', '靠背开胸|squeeze|颈肩|dt|2',
+    '手腕旋转 + 握力环|grip|手腕|d|1', '手腕画圈|wrist|手腕|dmc|1', '祈祷式腕拉伸|wrist|手腕|d|1', '反向腕拉伸|wrist|手腕|d|1', '握拳-张开|grip|手腕|dmct|1',
+    '静音握力环|grip|手腕|m|2', '地铁指节握力|grip|手腕|c|2', '筋膜球滚掌心|grip|手腕|ct|1', '手指逐个对捏|grip|手腕|m|1', '甩手放松|wrist|手腕|dh|1',
+    '前臂内外旋|wrist|手腕|d|1', '鼠标手舒缓|wrist|手腕|d|2', '拇指拉伸|grip|手腕|dm|1', '弹力带腕屈伸|wrist|手腕|d|2', '键盘间隙抖手|wrist|手腕|d|1',
+    '桌面推掌|reach|手腕|d|1',
+    '腰垫骨盆前后倾|pelvic|腰背|d|2', '坐姿转体|twist|腰背|dt|2', '坐姿侧弯|side|腰背|dm|1', '猫牛式 · 坐姿版|pelvic|腰背|d|2', '椅背扭转|twist|腰背|d|1',
+    '坐姿髋部开合|pelvic|腰背|t|3', '挺胸收腹|pelvic|腰背|dm|1', '隐形核心收紧|breathe|腰背|m|2', '站立侧弯|side|腰背|dh|1', '靠墙天使|reach|腰背|h|2',
+    '背部伸展|reach|腰背|d|1', '臀部收紧|pelvic|腰背|m|1', '坐姿抱膝|ext|腰背|d|1', '腰部画圈|twist|腰背|h|2', '久坐脊柱复位|pelvic|腰背|d|2',
+    '弹力带划船|squeeze|腰背|d|2',
+    '桌下抖腿燃脂|bounce|下肢|d|3', '脚蹬拉力 · 隐形椭圆|ext|下肢|d|5', '坐姿抬腿|ext|下肢|dm|2', '桌下脚踝画圈|ankle|下肢|dmt|1', '勾脚绷脚|ankle|下肢|dmt|1',
+    '扶杆站立提踵|calf|下肢|c|2', '坐姿提踵|bounce|下肢|dm|2', '靠墙静蹲|squat|下肢|h|3', '起身深蹲|squat|下肢|dh|2', '原地踏步|march|下肢|dh|2',
+    '等电梯提踵|calf|下肢|c|1', '夹膝内收|bounce|下肢|m|1', '膝盖外展|bounce|下肢|d|1', '单腿平衡|calf|下肢|c|1', '站立勾腿|march|下肢|h|1',
+    '坐姿腿伸展|ext|下肢|t|2', '小腿拉伸|calf|下肢|d|1', '弓步拉伸|squat|下肢|h|2', '楼梯快走|march|下肢|c|3', '脚趾抓地|ankle|下肢|m|1',
+    '交替踮脚|march|下肢|c|1', '桌下踩单车|ext|下肢|d|3', '深蹲起立 ×10|squat|下肢|d|2', '站立踢腿|march|下肢|h|1',
+    '眼球转动|eye|眼部|dmct|1', '远近对焦|eye|眼部|dc|1', '20-20-20 护眼|eye|眼部|d|1', '闭眼放松|eye|眼部|m|1', '眼周按压|eye|眼部|d|1',
+    '上下看|eye|眼部|dm|1', '左右看|eye|眼部|dm|1', '眨眼练习|eye|眼部|dmc|1',
+    '会前腹式呼吸|breathe|呼吸|m|2', '4-7-8 呼吸|breathe|呼吸|dm|2', '箱式呼吸|breathe|呼吸|mc|2', '叹气式放松|breathe|呼吸|d|1', '交替鼻孔呼吸|breathe|呼吸|t|2',
+    '午后提神呼吸|breathe|呼吸|d|1', '下班减压呼吸|breathe|呼吸|ch|3', '睡前呼吸|breathe|呼吸|ht|3',
+    '站起来走一走|march|全身|dh|2', '全身伸展|reach|全身|dh|1', '开合跳 · 静音版|reach|全身|h|2', '站立转体|twist|全身|h|2', '茶水间伸展|side|全身|d|2',
+    '午休唤醒操|reach|全身|d|3', '酒店房间微燃|squat|全身|t|5', '高铁站立伸展|side|全身|t|2'
+  ];
+  var LIB = RAW.map(function (r, i) {
+    var p = r.split('|');
+    return { id: 'm' + (i + 1), no: i + 1, name: p[0], anim: p[1], part: p[2], sc: p[3], min: +p[4] };
+  });
+  var BY_ID = {}, BY_NAME = {};
+  LIB.forEach(function (m) { BY_ID[m.id] = m; BY_NAME[m.name] = m; });
+  function scLabel(m) { return m.sc.split('').map(function (k) { return SCN[k]; }).join(' · '); }
+  function tagsText(m) { return m.part + ' · ' + scLabel(m); }
+
+  // the original four scene lists, as before
+  var SCENES = [
+    { id: 'desk', en: 'DESK', zh: '工位' },
+    { id: 'commute', en: 'COMMUTE', zh: '通勤' },
+    { id: 'meeting', en: 'MEETING', zh: '会议静音' },
+    { id: 'travel', en: 'TRAVEL', zh: '差旅' }
+  ];
+  function ids(names) { return names.map(function (n) { return BY_NAME[n].id; }); }
+  var DEFAULT_LISTS = {
+    desk: ids(['颈部唤醒', '手腕旋转 + 握力环', '桌下抖腿燃脂', '腰垫骨盆前后倾', '脚蹬拉力 · 隐形椭圆']),
+    commute: ids(['地铁指节握力', '扶杆站立提踵', '筋膜球滚掌心']),
+    meeting: ids(['静音握力环', '桌下脚踝画圈', '会前腹式呼吸']),
+    travel: ids(['颈枕拉伸', '坐姿髋部开合']),
+    t1: ids(['午后提神呼吸', '20-20-20 护眼', '起身深蹲'])
+  };
+  var NECK_STEPS = [
+    { name: '低头下巴找锁骨', anim: 'nod' }, { name: '左右侧颈拉伸', anim: 'tilt' },
+    { name: '肩胛后夹', anim: 'squeeze' }, { name: '慢速转头', anim: 'turn' }
+  ];
+  var PRODUCTS = [
+    { id: 'ring', en: 'SILENT RING', name: '静音握力环', sub: '会议场景 · 亲肤硅胶', icon: 'ring', c: '#4CB5AE', price: 39, moves: ['静音握力环', '手腕旋转 + 握力环'] },
+    { id: 'pedal', en: 'DESK PEDAL', name: '桌面脚蹬拉力器', sub: '工位场景 · 桌下隐形', icon: 'pedal', c: '#FF8A5C', price: 129, moves: ['脚蹬拉力 · 隐形椭圆', '桌下抖腿燃脂'] },
+    { id: 'pad', en: 'LUMBAR PAD', name: '久坐记忆棉腰垫', sub: '工位场景 · 可配合拉伸', icon: 'pad', c: '#FF8A5C', price: 159, moves: ['腰垫骨盆前后倾'] },
+    { id: 'ball', en: 'FASCIA BALL', name: '便携筋膜球', sub: '通勤场景 · 口袋大小', icon: 'ball', c: '#4CB5AE', price: 29, moves: ['筋膜球滚掌心'] },
+    { id: 'pillow', en: 'NECK PILLOW', name: '折叠颈枕拉伸带', sub: '差旅场景 · 两用', icon: 'pillow', c: '#4CB5AE', price: 89, moves: ['颈枕拉伸'] },
+    { id: 'band', en: 'SOFT BAND', name: '轻弹办公弹力带', sub: '工位场景 · 三档阻力', icon: 'band', c: '#FF8A5C', price: 49, moves: ['桌下抖腿燃脂', '坐姿髋部开合'] }
+  ];
+  var KIT = { id: 'kit', en: 'DESK KIT', name: '工位微运动套装', sub: '握力环 + 脚蹬 + 腰垫 + 弹力带 · 解锁周一到周五专属课程', c: '#FF8A5C', price: 299, was: 376, moves: ['颈部唤醒', '腰垫骨盆前后倾', '脚蹬拉力 · 隐形椭圆', '静音握力环'] };
+  var PEOPLE = [
+    { id: 'lin', i: '林', name: '小林', act: '刚完成 手腕旋转', t: '2 分钟前', c: '#4CB5AE' },
+    { id: 'q', i: 'Q', name: 'Queenie', act: '连续打卡 20 天', t: '18 分钟前', c: '#FF8A5C' },
+    { id: 'zhe', i: '哲', name: '阿哲', act: '会议里静音握了 50 下', t: '1 小时前', c: '#FFFFFF' }
+  ];
+  var BADGES = [
+    { id: 'neck', name: '颈椎守护者' }, { id: 'power', name: '满电复工' }, { id: 'leg', name: '抖腿大师' },
+    { id: 'meet', name: '会议隐身者' }, { id: 'commute', name: '通勤玩家' }, { id: 'thirty', name: '30 天不重样' }
+  ];
+  var HOURS = ['9', '10', '11', '12', '13', '14', '15', '16', '17'];
+  var TAG_IDEAS = ['肩颈急救', '摸鱼专用', '下班前', '腰酸了', '开会前', '早八续命'];
+
+  // ---------- state ----------
+  var S = {
+    tab: 'home', scene: 'desk', query: '',
+    session: null, done: false, sheet: null,
+    sitSec: 47 * 60 + 12, micro: 6, minutes: 14, streak: 12, xp: 880, level: 7, total: 214,
+    hourly: [1, 1, 2, 0, 1, 1, 0, 0, 0],
+    nextIdx: 0, pokes: 0, mantra: null, mTried: {}, chIdx: 0, factIdx: 0, insight: false, standCount: 3, tipIdx: 0, tipHidden: false, fast: false,
+    bag: 2, added: { ring: true, kit: true },
+    remind: true, silent: true, vibe: false, interval: 60,
+    badges: { neck: true, leg: true, power: false }, hi5: {},
+    lib: { open: false, part: 'all', q: '', target: 'desk' },
+    // persisted
+    favs: { m1: true, m53: true },
+    tags: [{ id: 't1', name: '午后犯困' }],
+    lists: JSON.parse(JSON.stringify(DEFAULT_LISTS))
+  };
+  var KEY = 'fidgetfit-lists-v1';
+  try {
+    var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
+    if (saved) ['favs', 'tags', 'lists'].forEach(function (k) { if (saved[k]) S[k] = saved[k]; });
+  } catch (e) {}
+  function save() { try { localStorage.setItem(KEY, JSON.stringify({ favs: S.favs, tags: S.tags, lists: S.lists })); } catch (e) {} }
+
+  var $ = function (id) { return document.getElementById(id); };
+  var pad = function (n) { return String(n).padStart(2, '0'); };
+  var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var yuan = function (n) { return '¥' + n; };
+  var view = $('view'), overlay = $('overlay'), overlay2 = $('overlay2'), libWrap = $('libWrap');
+
+  var toastTimer;
+  function toast(t) {
+    clearTimeout(toastTimer);
+    $('toastWrap').innerHTML = '<div class="toast" role="status">' + esc(t) + '</div>';
+    toastTimer = setTimeout(function () { $('toastWrap').innerHTML = ''; }, 1900);
+  }
+  // all lists = the four scenes + the user's own tags
+  function allLists() { return SCENES.map(function (s) { return { id: s.id, name: s.zh, own: false }; }).concat(S.tags.map(function (t) { return { id: t.id, name: t.name, own: true }; })); }
+  function listName(id) { var l = allLists().filter(function (x) { return x.id === id; })[0]; return l ? l.name : ''; }
+  function listOf(id) { return (S.lists[id] || []).filter(function (x) { return BY_ID[x]; }).map(function (x) { return BY_ID[x]; }); }
+
+  // ---------- HOME ----------
+  function barsHtml() {
+    return S.hourly.map(function (v, i) {
+      var c = i === 5 ? '#FF8A5C' : (v > 0 ? '#4CB5AE' : '#262626');
+      return '<div><i style="height:' + (v * 24 + 6) + 'px;background:' + c + ';animation-delay:' + (i * 0.05) + 's"></i><span class="' + (i === 5 ? 'now' : '') + '">' + HOURS[i] + '</span></div>';
+    }).join('');
+  }
+  function squadBtn(p) {
+    var d = !!S.hi5[p.id];
+    return '<button class="hi press' + (d ? ' done' : '') + '" data-act="hi5" data-arg="' + p.id + '" aria-label="给 ' + p.name + ' 击掌">' + (d ? '已击掌' : '击掌') + '</button>';
+  }
+  var TIPS = [
+    '屏幕顶部和视线齐平，脖子会感谢你。',
+    '每喝一口水，就耸一次肩。',
+    '打字 30 分钟，手腕画 10 个圈。',
+    '久坐时双脚平放，别翘二郎腿。',
+    '开会把手机放远一点，起身去拿也算微动。',
+    '午饭后站 5 分钟，下午不容易犯困。'
+  ];
+  var POKE_LINES = ['嘿！一起动起来', '抖腿也算数哦', '我先热个身', '颈椎说谢谢你', '别光看我呀', '再戳我就抽筋了', '满电复工！'];
+  function nextMove() { var l = listOf('desk'); return l[S.nextIdx % l.length] || LIB[0]; }
+  function nextInfo(m) {
+    if (m.name === '颈部唤醒') return { time: '02:00', title: '颈部唤醒 · 4 个动作', anim: 'orig' };
+    return { time: pad(m.min) + ':00', title: m.name + ' · ' + m.min + ' 分钟', anim: m.anim };
+  }
+  function tipHtml() {
+    if (S.tipHidden) return '';
+    return '<section class="tipcard px" id="tipCard"><div class="hd"><span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/></svg>微动小贴士 <b id="tipNo">' + pad(S.tipIdx + 1) + '/' + pad(TIPS.length) + '</b></span>' +
+      '<button class="x press" data-act="tipClose" aria-label="关闭小贴士">' + I.close + '</button></div>' +
+      '<p id="tipText">' + TIPS[S.tipIdx] + '</p>' +
+      '<div class="ft"><span class="dots" id="tipDots">' + TIPS.map(function (t, i) { return '<i class="' + (i === S.tipIdx ? 'on' : '') + '"></i>'; }).join('') + '</span>' +
+      '<button class="nx press" data-act="tipNext">下一条 ' + I.arrow.replace('width="18" height="18"', 'width="14" height="14"') + '</button></div></section>';
+  }
+  function homeHtml() {
+    var marq = '<span>MOVE IN 2 MIN</span><span>/</span><span>微动一下 满电复工</span><span>/</span><span>DESK IS YOUR GYM</span><span>/</span>';
+    var nm = nextMove(), ni = nextInfo(nm);
+    return '<div class="page home">' +
+      '<header class="topbar px"><div class="greet"><small>' + todayLabel() + '</small><b>嗨，' + NICK + '</b></div>' +
+      '<div style="display:flex;align-items:center;gap:10px"><span class="live"><i class="blink"></i>LIVE</span><button class="round press" data-act="bell" aria-label="通知">' + I.bell + '<span class="badge-dot"></span></button></div></header>' +
+      '<button class="marquee' + (S.fast ? ' fast' : '') + '" id="marq" data-act="marq" aria-label="切换跑马灯速度" style="width:calc(100% + 20px)"><div>' + marq + marq + '</div></button>' +
+      '<section class="card next px" id="nextCard">' +
+      '<button class="figbtn" data-act="poke" aria-label="戳一下小人"><span class="figwrap" id="heroFig">' + fig(ni.anim, 104, '#4CB5AE', 4) + '</span>' +
+      (S.pokes ? '' : '<span class="bubble hint" id="figBubble">戳戳我</span>') + '</button>' +
+      '<div class="tagrow2"><em>下一个微动</em><span>会议前 · 14:00</span></div>' +
+      '<div class="nm-main"><div class="d" style="font-size:76px;line-height:.9" id="nextTime">' + ni.time + '</div>' +
+      '<div style="font-size:18px;font-weight:900;line-height:1.35" id="nextTitle">' + ni.title + '</div>' +
+      '<div style="font-size:13px;color:#9A9A9A" id="nextSub">' + tagsText(nm) + '</div></div>' +
+      '<div style="display:flex;align-items:center;gap:10px;margin-top:6px;position:relative;z-index:3"><button class="pill white big press" data-act="startNext">开始微动 ' + I.arrow + '</button>' +
+      '<button class="shuf press" id="shuf" data-act="shuffle" aria-label="换一个动作"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>换一个</button></div></section>' +
+      '<section class="sit px" id="sitCard">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-end"><button class="clockbtn press" data-act="insight" aria-expanded="' + S.insight + '"><span class="lbl"><span id="sitLabel"></span> <i id="sitMore">' + (S.insight ? '收起 ▴' : '看详情 ▾') + '</i></span><span class="clock" id="sitClock"></span></button><span class="tgt" id="sitTgt"></span></div>' +
+      '<div class="track"><div class="bar" id="sitBar"></div></div>' +
+      '<div class="insight' + (S.insight ? ' on' : '') + '" id="insight"><div><b>3h12m</b><span>今日累计久坐</span></div><div><b>72\'</b><span>最长一次</span></div><div><b id="standN">' + S.standCount + '</b><span>今天站起次数</span></div></div>' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><span style="font-size:13px;font-weight:500" id="sitHint"></span><button class="btn press" id="standBtn" data-act="stand">我站起来了</button></div></section>' +
+      tipHtml() +
+      '<button class="newbar press px" data-act="openPromo"><span class="tg">NEW</span><span class="tx"><b>小组件 & Apple Watch</b><span>不打开 App，也能一键开练</span></span><span class="ic">' + I.watch + I.grid + '</span>' + I.arrow + '</button>' +
+      '<section class="hero px" id="hero"><span class="mhint"><span>TODAY\'S MANTRA</span><span class="tap">点一点 ↓</span></span>' +
+      '<h1>' + lineHtml('Take a', 'take') + lineHtml('Fidget', 'fidget') + lineHtml('Break.', 'brk') + '</h1><p>给身体，一个微动的借口。</p><div id="mPop"></div></section>' +
+      '<section class="stats px"><div><b>' + S.micro + '</b><span>今日微动</span></div><div><b>' + S.minutes + '</b><span>活动分钟</span></div><div class="o"><b>' + S.streak + '</b><span>连续打卡天</span></div></section>' +
+      '<section class="rhythm px"><div class="h2row"><b style="font-size:16px">今日节奏</b><span style="font-size:12px;color:#9A9A9A">每小时微动次数</span></div><div class="bars">' + barsHtml() + '</div></section>' +
+      '<section style="display:flex;flex-direction:column;gap:14px"><div class="h2row px"><h2 class="h2">按场景动</h2><button class="link press" data-act="tab" data-arg="moves">全部动作</button></div>' +
+      '<div class="hscroll">' + SCENES.map(function (sc, i) {
+        return '<button class="scene press' + (i === 0 ? ' first' : '') + '" data-act="scene" data-arg="' + sc.id + '"><span class="n">0' + (i + 1) + '</span><span><span class="e">' + sc.en + '</span><span class="z">' + sc.zh.replace('静音', '') + ' · ' + listOf(sc.id).length + ' 个动作</span></span></button>';
+      }).join('') + '</div></section>' +
+      '<section class="px" style="display:flex;flex-direction:column;gap:6px"><div class="h2row" style="margin-bottom:4px"><h2 class="h2">工位小队</h2><span style="font-size:12px;color:#9A9A9A">3 人正在一起动</span></div>' +
+      PEOPLE.map(function (p) {
+        return '<div class="person"><span class="avatar" style="background:' + p.c + '">' + p.i + '</span><span class="t"><b>' + p.name + '</b><span>' + p.act + ' · ' + p.t + '</span></span><span id="hi-' + p.id + '">' + squadBtn(p) + '</span></div>';
+      }).join('') + '</section></div>';
+  }
+  function replay(el, cls) { if (!el) return; el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
+  var bubbleTimer;
+  function say(text) {
+    var btn = view.querySelector('.figbtn'); if (!btn) return;
+    var old = $('figBubble'); if (old) old.remove();
+    var b = document.createElement('span'); b.className = 'bubble'; b.id = 'figBubble'; b.textContent = text; btn.appendChild(b);
+    clearTimeout(bubbleTimer);
+    bubbleTimer = setTimeout(function () { b.classList.add('gone'); setTimeout(function () { b.remove(); }, 220); }, 1800);
+  }
+  function miniBurst(host) {
+    var cols = ['#4CB5AE', '#FF8A5C', '#FFFFFF'], h = '<span class="mini" aria-hidden="true">';
+    for (var i = 0; i < 10; i++) h += '<span style="transform:rotate(' + (i * 36) + 'deg)"><i style="background:' + cols[i % 3] + ';animation-delay:' + (i % 3) * 0.03 + 's"></i></span>';
+    host.insertAdjacentHTML('beforeend', h + '</span>');
+    var m = host.lastElementChild; setTimeout(function () { m.remove(); }, 800);
+  }
+  function updateSit() {
+    var card = $('sitCard'); if (!card) return;
+    var limit = S.interval * 60, over = S.sitSec >= limit;
+    var left = Math.max(0, Math.ceil((limit - S.sitSec) / 60));
+    if (over && !card.classList.contains('over')) replay(card, 'shake');
+    card.classList.toggle('over', over);
+    $('sitLabel').textContent = over ? '该动一动了' : '本轮已久坐';
+    $('sitClock').textContent = pad(Math.floor(S.sitSec / 60)) + ':' + pad(S.sitSec % 60);
+    $('sitTgt').textContent = '目标 ≤ ' + S.interval + ' MIN';
+    $('sitBar').style.width = Math.min(100, S.sitSec / limit * 100).toFixed(1) + '%';
+    $('sitHint').textContent = over ? '已超过目标，来一组 2 分钟微动吧。' : left + ' 分钟后提醒你，抖抖腿也算数。';
+  }
+
+  // ---------- MOVES (same layout as before) ----------
+  function current() {
+    var q = S.query.trim();
+    if (q) return LIB.filter(function (m) { return (m.name + tagsText(m)).indexOf(q) >= 0; });
+    return listOf(S.scene);
+  }
+  function chipsHtml() {
+    var q = S.query.trim();
+    return allLists().map(function (l) {
+      return '<button class="chip press' + (l.own ? ' ct' : '') + (!q && S.scene === l.id ? ' on' : '') + '" data-act="chip" data-arg="' + l.id + '">' + esc(l.name) + '</button>';
+    }).join('') + '<button class="chip new press" data-act="newTag" data-arg="moves">+ 新标签</button>';
+  }
+  function favBtn(m) {
+    var on = !!S.favs[m.id];
+    return '<button class="round fav press' + (on ? ' on' : '') + '" data-act="fav" data-arg="' + m.id + '" aria-label="' + (on ? '取消收藏' : '收藏') + '">' + heart(on) + '</button>';
+  }
+  function listHtml() {
+    var q = S.query.trim(), list = current();
+    var rows = list.map(function (m, i) {
+      return '<div class="mrow" style="animation-delay:' + Math.min(i, 8) * 0.04 + 's"><button class="go press" data-act="start" data-arg="' + m.id + '"><span class="no">' + pad(i + 1) + '</span><span class="tx"><b>' + m.name + '</b><span>' + tagsText(m) + '</span></span><span class="mn">' + m.min + ' MIN</span></button><span id="fav-' + m.id + '">' + favBtn(m) + '</span></div>';
+    }).join('');
+    if (!list.length) rows = '<div class="empty">' + (q ? '没有找到这个动作，换个关键词试试。' : '这个列表还是空的，从动作库挑几个加进来吧。') + '</div>';
+    if (!q) rows += '<button class="addmore press" data-act="openLib" data-arg="' + S.scene + '">' + I.plus + '从动作库添加到「' + esc(listName(S.scene)) + '」</button>';
+    return rows;
+  }
+  function listTitle() {
+    var q = S.query.trim(), n = current().length;
+    if (q) return '<h2 class="h2">搜索结果 · ' + n + '</h2>';
+    var own = S.scene.charAt(0) === 't';
+    return '<h2 class="h2">' + esc(listName(S.scene)) + (own ? '' : '精选') + ' · ' + n + '</h2>' +
+      (n ? '<button class="playall press" data-act="playList">' + I.playS + '连播这组</button>' : '');
+  }
+  function movesHtml() {
+    return '<div class="page">' +
+      '<header style="display:flex;flex-direction:column;gap:2px;animation:fadeUp .5s ease both"><span class="kicker">动作库 · 100 个微动 · 平均 2 分钟</span><h1 class="bigtitle">Moves</h1></header>' +
+      '<label class="search">' + I.search + '<span class="sr">搜索动作</span><input id="search" type="search" placeholder="搜索：颈椎、手腕、抖腿…" value="' + esc(S.query) + '"></label>' +
+      '<div class="chips" id="chips">' + chipsHtml() + '</div>' +
+      '<section class="week"><span class="ring" aria-hidden="true"></span><div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;letter-spacing:1px"><span>本周套装 · WEEK SET</span><span>5 / 5 已完成</span></div>' +
+      '<div class="t">Mon—Fri<br>Never the same.</div><div style="font-size:14px;font-weight:500">周一到周五，每天不重样的 5 分钟工位微运动</div>' +
+      '<div class="days">' + ['一', '二', '三', '四', '五'].map(function (d, i) { return '<span style="animation-delay:' + (i * 0.06) + 's">' + d + '</span>'; }).join('') + '</div></section>' +
+      '<button class="libcard press" data-act="openLib" data-arg="' + S.scene + '"><span class="tx"><b>Library</b><strong>完整动作库 · 100 个微动</strong><span>按部位浏览，挑喜欢的加进你的列表</span></span>' +
+      '<span class="figs">' + fig('reach', 30, '#4CB5AE', 6) + fig('squat', 30, '#FF8A5C', 6) + '</span><i>' + I.arrow + '</i></button>' +
+      '<section><div class="h2row" id="listTitle" style="margin-bottom:6px;align-items:center">' + listTitle() + '</div><div id="moveList">' + listHtml() + '</div></section></div>';
+  }
+  function refreshMoves() {
+    if (S.tab !== 'moves' || !$('moveList')) return;
+    $('chips').innerHTML = chipsHtml();
+    $('moveList').innerHTML = listHtml();
+    $('listTitle').innerHTML = listTitle();
+    var lc = view.querySelector('.libcard'); if (lc) lc.dataset.arg = S.scene;
+  }
+
+  // ---------- LIBRARY (separate page) ----------
+  function libFiltered() {
+    var q = S.lib.q.trim(), p = S.lib.part;
+    return LIB.filter(function (m) {
+      if (p !== 'all' && m.part !== p) return false;
+      return !q || (m.name + tagsText(m)).indexOf(q) >= 0;
+    });
+  }
+  function libPartsHtml() {
+    return ['all'].concat(PARTS).map(function (p) {
+      var n = p === 'all' ? 100 : LIB.filter(function (m) { return m.part === p; }).length;
+      return '<button class="chip press' + (S.lib.part === p ? ' on' : '') + '" data-act="libPart" data-arg="' + p + '">' + (p === 'all' ? '全部' : p) + ' <small style="opacity:.6;font-size:11px">' + n + '</small></button>';
+    }).join('');
+  }
+  function libTargetsHtml() {
+    return allLists().map(function (l) {
+      return '<button class="chip press' + (l.own ? ' ct' : '') + (S.lib.target === l.id ? ' on' : '') + '" data-act="libTarget" data-arg="' + l.id + '">' + esc(l.name) + ' <small style="opacity:.7;font-size:11px">' + listOf(l.id).length + '</small></button>';
+    }).join('') + '<button class="chip new press" data-act="newTag" data-arg="lib">+ 新标签</button>';
+  }
+  function libAddBtn(m) {
+    var on = (S.lists[S.lib.target] || []).indexOf(m.id) >= 0;
+    return '<button class="addbtn press' + (on ? ' on' : '') + '" data-act="libAdd" data-arg="' + m.id + '" aria-label="' + (on ? '从「' + esc(listName(S.lib.target)) + '」移除 ' : '添加到「' + esc(listName(S.lib.target)) + '」 ') + m.name + '">' + (on ? I.checkS + '已添加' : I.plusS + '添加') + '</button>';
+  }
+  function libListHtml() {
+    var list = libFiltered();
+    if (!list.length) return '<div class="empty">没有找到这个动作，换个关键词试试。</div>';
+    return list.map(function (m) {
+      return '<div class="lrow"><button class="go press" data-act="libStart" data-arg="' + m.id + '"><span class="thumb"><span class="no">' + pad(m.no) + '</span>' + fig(m.anim, 44, '#4CB5AE', 6) + '</span>' +
+        '<span class="tx"><b>' + m.name + '</b><span>' + m.min + ' MIN · ' + tagsText(m) + '</span></span></button><span id="la-' + m.id + '">' + libAddBtn(m) + '</span></div>';
+    }).join('');
+  }
+  function libHeadCount() { return libFiltered().length + ' 个动作 · 点名称可直接开练'; }
+  function openLib(target) {
+    S.lib.open = true; if (target) S.lib.target = target;
+    libWrap.innerHTML = '<div class="lib" id="lib" role="dialog" aria-label="动作库"><div class="page">' +
+      '<div class="libtop"><button class="back press" data-act="closeLib">' + I.back + '返回</button><span class="kicker">100 个微动 · 7 个部位</span></div>' +
+      '<h1 class="bigtitle">Library</h1>' +
+      '<label class="search">' + I.search + '<span class="sr">搜索动作库</span><input id="libSearch" type="search" placeholder="搜索 100 个动作…" value="' + esc(S.lib.q) + '"></label>' +
+      '<div class="scrollx" id="libParts">' + libPartsHtml() + '</div>' +
+      '<div class="target"><span class="lb"><span>添加到</span><b id="libTargetName">「' + esc(listName(S.lib.target)) + '」</b></span><div class="scrollx" id="libTargets">' + libTargetsHtml() + '</div></div>' +
+      '<span class="kicker" id="libCount">' + libHeadCount() + '</span>' +
+      '<div id="libList" style="margin-top:-10px">' + libListHtml() + '</div></div></div>';
+  }
+  function refreshLib(full) {
+    if (!$('lib')) return;
+    $('libTargets').innerHTML = libTargetsHtml();
+    $('libTargetName').textContent = '「' + listName(S.lib.target) + '」';
+    if (full) { $('libParts').innerHTML = libPartsHtml(); $('libList').innerHTML = libListHtml(); $('libCount').textContent = libHeadCount(); }
+  }
+  function closeLib() {
+    S.lib.open = false; libWrap.innerHTML = '';
+    if (S.tab === 'moves') { S.scene = S.lib.target; S.query = ''; render(true); }
+  }
+
+  // ---------- GEAR ----------
+  function findProduct(id) { return id === 'kit' ? KIT : PRODUCTS.filter(function (p) { return p.id === id; })[0]; }
+  function bagTotal() { var t = 0; Object.keys(S.added).forEach(function (k) { if (S.added[k]) t += findProduct(k).price; }); return t; }
+  function bagBadge() { return '<span class="bagbadge" id="bagBadge">' + S.bag + '</span>'; }
+  function gearHtml() {
+    return '<div class="page">' +
+      '<header style="display:flex;justify-content:space-between;align-items:flex-end"><div style="display:flex;flex-direction:column;gap:2px;animation:fadeUp .5s ease both"><span class="kicker">好看且有用的工位装备</span><h1 class="bigtitle">Gear</h1></div>' +
+      '<button class="round press" style="width:48px;height:48px;border-radius:24px" data-act="bag" aria-label="购物袋">' + I.bag + '<span id="bagWrap">' + bagBadge() + '</span></button></header>' +
+      '<button class="kit press" data-act="sheet" data-arg="kit"><span class="img"><span class="wm" aria-hidden="true">DESK KIT</span>' +
+      '<svg width="220" height="130" viewBox="0 0 210 120" fill="none" stroke="#000" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="animation:fadeUp .6s ease .2s both"><rect x="20" y="34" width="170" height="70" rx="10"/><path d="M20 54h170"/><rect x="88" y="22" width="34" height="22" rx="4" fill="#000"/><circle cx="60" cy="80" r="10"/><path d="M100 72h56M100 86h40"/></svg>' +
+      '<span class="new">首发价 · 立省 ¥77</span></span><span class="body"><span class="en">Desk Kit · 5 Days</span><span style="font-size:15px;font-weight:700">工位微运动套装</span><span style="font-size:13px;color:#9A9A9A">牛皮纸开箱 · 解锁 App 周一到周五专属课程</span>' +
+      '<span style="display:flex;justify-content:space-between;align-items:center;margin-top:6px"><span class="price">' + yuan(KIT.price) + '<span class="was">' + yuan(KIT.was) + '</span></span><span class="pill white" style="font-size:13px">查看详情</span></span></span></button>' +
+      '<div class="h2row"><h2 class="h2">单品</h2><span style="font-size:13px;color:#9A9A9A">扫码绑定，动作自动匹配</span></div>' +
+      '<section class="grid2">' + PRODUCTS.map(function (p, i) {
+        return '<div class="prod" style="animation-delay:' + (i * 0.05) + 's"><button class="pic press" style="color:' + p.c + '" data-act="sheet" data-arg="' + p.id + '" aria-label="查看 ' + p.name + '"><small aria-hidden="true">' + p.en + '</small>' + PICS[p.icon] + '</button>' +
+          '<div class="meta"><div><b>' + p.name + '</b><span>' + p.sub + '</span><span class="price">' + yuan(p.price) + '</span></div>' +
+          '<button class="add press' + (S.added[p.id] ? ' on' : '') + '" id="add-' + p.id + '" data-act="add" data-arg="' + p.id + '" aria-label="' + (S.added[p.id] ? '移出购物袋' : '加入购物袋') + '">' + (S.added[p.id] ? I.check : I.plus) + '</button></div></div>';
+      }).join('') + '</section>' +
+      '<button class="eap press" data-act="eap"><span><b>For Teams</b><span>企业 EAP 健康礼盒 · 20 人起订 · ¥199/人</span></span><i>' + I.arrow + '</i></button></div>';
+  }
+  function toggleAdd(id) {
+    var p = findProduct(id), on = !!S.added[id];
+    S.added[id] = !on; S.bag += on ? -1 : 1;
+    var b = $('add-' + id);
+    if (b) { b.classList.toggle('on', !on); b.innerHTML = !on ? I.check : I.plus; b.setAttribute('aria-label', !on ? '移出购物袋' : '加入购物袋'); }
+    if ($('bagWrap')) $('bagWrap').innerHTML = bagBadge();
+    toast(on ? '已移出购物袋 · 合计 ' + yuan(bagTotal()) : '已加入 ' + p.name + ' · 合计 ' + yuan(bagTotal()));
+  }
+
+  // ---------- ME ----------
+  function switchHtml(key, label, sub) {
+    return '<div class="set"><div><b>' + label + '</b><span>' + sub + '</span></div><button class="switch" role="switch" aria-checked="' + (S[key] ? 'true' : 'false') + '" aria-label="' + label + '" data-act="switch" data-arg="' + key + '" data-label="' + label + '"></button></div>';
+  }
+  function ivalsHtml() {
+    return [30, 45, 60].map(function (v) { return '<button class="ival press' + (S.interval === v ? ' on' : '') + '" data-act="ival" data-arg="' + v + '">' + v + '\'</button>'; }).join('');
+  }
+  function meHtml() {
+    var days = ['一', '二', '三', '四', '五', '六', '日'];
+    var bcount = 5 + Object.keys(S.badges).filter(function (k) { return S.badges[k]; }).length;
+    return '<div class="page">' +
+      '<header class="me-head"><span class="me-av">M</span><span style="flex:1;display:flex;flex-direction:column;gap:4px"><b style="font-size:20px;font-weight:900">' + NICK + '</b><span style="font-size:13px;color:#9A9A9A">格子间玩家 · 加入第 38 天</span></span></header>' +
+      '<section class="level"><div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;letter-spacing:1px"><span>玩家等级</span><span>还差 ' + (1000 - S.xp) + ' XP 升级</span></div>' +
+      '<div class="big">Level ' + pad(S.level) + '</div><div class="track"><i style="width:' + (S.xp / 10) + '%"></i></div><div style="font-size:14px;font-weight:700">把焦虑变成多巴胺 · 已累计 ' + S.total + ' 次微动</div></section>' +
+      '<section style="display:flex;flex-direction:column;gap:12px"><div class="h2row"><h2 class="h2">本周打卡</h2><span class="d" style="font-size:18px;color:#FF8A5C">' + S.streak + ' DAY STREAK</span></div><div class="days7">' +
+      days.map(function (d, i) {
+        if (i < 5) return '<div><span class="c done" style="animation-delay:' + (i * 0.06) + 's">' + I.check + '</span>' + d + '</div>';
+        if (i === 5) return '<div><span class="c today">' + S.micro + '</span><span class="now">今天</span></div>';
+        return '<div><span class="c future"></span>' + d + '</div>';
+      }).join('') + '</div></section>' +
+      '<section style="display:flex;flex-direction:column;gap:12px"><div class="h2row"><h2 class="h2">徽章收集</h2><span style="font-size:13px;color:#9A9A9A">' + bcount + ' / 24</span></div><div class="grid3">' +
+      BADGES.map(function (b, i) {
+        var on = !!S.badges[b.id];
+        return '<button class="bdg press ' + (on ? 'on' : 'off') + '" style="animation-delay:' + (i * 0.05) + 's" data-act="badge" data-arg="' + b.id + '">' + (on ? BADGE_ICON[b.id] : I.lock) + b.name + '</button>';
+      }).join('') + '</div></section>' +
+      '<section style="display:flex;flex-direction:column;gap:10px"><h2 class="h2">App</h2><div class="setbox"><div class="set" style="border-bottom:none"><div><b>添加到主屏幕</b><span id="installSub">' + installSub() + '</span></div>' + installBtn() + '</div><div class="set" style="border-bottom:none;border-top:1px solid #1E1E1E"><div><b>小组件 & Apple Watch</b><span>多端联动功能介绍</span></div><button class="installbtn press" style="background:#fff" data-act="openPromo">查看</button></div></div></section>' +
+      '<section style="display:flex;flex-direction:column;gap:10px"><h2 class="h2">微动设置</h2><div class="setbox">' +
+      switchHtml('remind', '久坐提醒', '到点轻震一下，提醒你动一动') + switchHtml('silent', '会议静音模式', '跟练时不出声，只看动作') + switchHtml('vibe', '节拍震动', '用震动代替口令计数') +
+      '<div style="display:flex;flex-direction:column;gap:10px;padding:14px 18px 16px"><b style="font-size:15px">提醒间隔</b><div class="ivals" id="ivals">' + ivalsHtml() + '</div></div></div></section></div>';
+  }
+
+  // ---------- render ----------
+  // ---------- mantra title: each line does its own thing ----------
+  var CHALLENGES = ['双臂上举，伸个大懒腰', '站起来原地踏 10 步', '闭眼深呼吸 3 次', '肩膀向后绕 5 圈', '看向窗外最远的地方', '双手握拳再张开 10 次'];
+  var FACTS = [
+    '抖腿、转笔这些小动作，心理学里叫 fidgeting，是身体在自我调节。',
+    '久坐时不自觉的小动作，能让腿部的血液流动起来。',
+    '这类小动作消耗的能量，被归在「非运动性产热」NEAT 里。',
+    '走神的时候，手里有点小动作反而更容易专注。',
+    '会议里握握力环，比反复看手机更不打扰别人。'
+  ];
+  var BREAK_CUES = ['放下鼠标，手离开键盘', '看向 6 米外的地方', '慢慢转转脖子', '喝一口水，回来继续'];
+  var STICKERS = [['+1 微动', '#000', '#FF8A5C'], ['伸个懒腰', '#000', '#fff'], ['喝口水', '#000', '#4CB5AE'], ['看远处', '#fff', '#000'], ['深呼吸', '#000', '#FF8A5C'], ['动一动', '#000', '#fff']];
+  var mTimer = null;
+  function lineHtml(text, key) {
+    var i = 0;
+    return '<button class="ln press" data-act="mantra" data-arg="' + key + '" aria-label="' + text + '">' + text.split('').map(function (c) {
+      return '<span class="ch" style="--i:' + (i++) + ';--r:' + (Math.random() * 30 - 15).toFixed(0) + 'deg">' + c + '</span>';
+    }).join('') + '</button>';
+  }
+  var RC = 69;
+  function ringSvg(frac) {
+    return '<svg viewBox="0 0 30 30" width="30" height="30" aria-hidden="true"><circle cx="15" cy="15" r="11" fill="none" stroke="#333" stroke-width="3"/><circle id="mRing" cx="15" cy="15" r="11" fill="none" stroke="#FF8A5C" stroke-width="3" stroke-linecap="round" stroke-dasharray="' + RC + '" stroke-dashoffset="' + Math.round(RC * (1 - frac)) + '" transform="rotate(-90 15 15)" style="transition:stroke-dashoffset 1s linear"/></svg>';
+  }
+  function stopMTimer() { clearInterval(mTimer); mTimer = null; }
+  function popHtml(k) {
+    var x = '<button class="x press" data-act="mClose" aria-label="收起">' + I.close + '</button>';
+    if (k === 'take') return '<div class="mtip take" role="dialog" aria-label="随手挑战">' + x + '<span class="k"><i></i>随手挑战 · 10 秒</span>' +
+      '<span class="t" id="mText">' + CHALLENGES[S.chIdx] + '</span>' +
+      '<div class="r" id="mRow"><span>完成 +5 XP</span><span class="bt"><button class="g press" data-act="mSwap">换一个</button><button class="b press" data-act="mGo">开始</button></span></div></div>';
+    if (k === 'fidget') return '<div class="mtip fidget" role="dialog" aria-label="冷知识">' + x + '<span class="k"><i></i>冷知识 <b id="mNo">' + (S.factIdx + 1) + '/' + FACTS.length + '</b></span>' +
+      '<span class="t" id="mText">' + FACTS[S.factIdx] + '</span>' +
+      '<div class="r"><span>小动作是身体的语言</span><button class="b press" data-act="mFact">下一条</button></div></div>';
+    return '<div class="mtip brk" role="dialog" aria-label="一分钟小休">' + x + '<span class="k"><i></i>1 分钟小休</span>' +
+      '<div class="live2"><span class="mring">' + ringSvg(1) + '<b id="mSec">60</b></span><span class="t" id="mCue">放下鼠标，让眼睛歇一下</span></div>' +
+      '<div class="r"><span id="mMeta">每 15 秒换一个提示</span><button class="b press" id="mBreakBtn" data-act="mBreak">开始</button></div></div>';
+  }
+  function placeTip(line, k) {
+    var hero = $('hero'), tip = $('mPop').firstElementChild; if (!hero || !tip) return;
+    var hw = hero.clientWidth, tw = tip.offsetWidth;
+    var top = line.offsetTop + line.offsetHeight * 0.62;
+    var left = k === 'take' ? line.offsetLeft + line.offsetWidth * 0.3 : k === 'fidget' ? line.offsetLeft - 8 : line.offsetLeft + line.offsetWidth - tw;
+    left = Math.max(0, Math.min(hw - tw, left));
+    tip.style.top = top + 'px'; tip.style.left = left + 'px';
+    tip.style.transformOrigin = (k === 'brk' ? 'top right' : 'top left');
+  }
+  function stickers(line) {
+    var hero = $('hero'); if (!hero) return;
+    var ox = line.offsetLeft + line.offsetWidth * 0.6, oy = line.offsetTop + 10;
+    STICKERS.slice().sort(function () { return Math.random() - .5; }).slice(0, 3).forEach(function (st, i) {
+      var el = document.createElement('span'), ang = (-140 + i * 45 + Math.random() * 16) * Math.PI / 180, dist = 70 + Math.random() * 30;
+      el.className = 'stk'; el.textContent = st[0]; el.setAttribute('aria-hidden', 'true');
+      el.style.cssText = '--x:' + ox + 'px;--y:' + oy + 'px;--dx:' + Math.round(Math.cos(ang) * dist) + 'px;--dy:' + Math.round(Math.sin(ang) * dist) + 'px;color:' + st[1] + ';background:' + st[2] + ';animation-delay:' + (i * 0.06) + 's';
+      hero.appendChild(el); setTimeout(function () { el.remove(); }, 1300);
+    });
+  }
+  function mantra(k, el) {
+    stopMTimer();
+    replay(el, { take: 'jump', fidget: 'jitter', brk: 'breaking' }[k]);
+    if (k === 'take') stickers(el);
+    if (navigator.vibrate) { try { navigator.vibrate(k === 'brk' ? [20, 40, 20] : 12); } catch (e) {} }
+    S.mantra = k;
+    var wasNew = !S.mTried[k]; S.mTried[k] = true;
+    $('mPop').innerHTML = popHtml(k); placeTip(el, k);
+    if (wasNew && S.mTried.take && S.mTried.fidget && S.mTried.brk) setTimeout(function () { toast('三行都点过了，解锁「口号大师」'); }, 600);
+  }
+  function closeMantra() { stopMTimer(); S.mantra = null; var p = $('mPop'); if (p) p.innerHTML = ''; }
+  function mChallenge() {
+    var left = 10, row = $('mRow');
+    row.innerHTML = '<span class="live2"><span class="mring">' + ringSvg(1) + '<b id="mSec">10</b></span><span>跟着倒数做</span></span>';
+    stopMTimer();
+    mTimer = setInterval(function () {
+      left--; if (!$('mSec')) { stopMTimer(); return; }
+      $('mSec').textContent = left; $('mRing').setAttribute('stroke-dashoffset', Math.round(RC * (1 - left / 10)));
+      if (left <= 0) {
+        stopMTimer(); S.xp = Math.min(999, S.xp + 5);
+        var t = view.querySelector('.mtip'); if (t) miniBurst(t);
+        row.innerHTML = '<span>完成啦 +5 XP</span><button class="b press" data-act="mSwap">再来一个</button>';
+      }
+    }, 1000);
+  }
+  function mBreak() {
+    var btn = $('mBreakBtn');
+    if (mTimer) { stopMTimer(); btn.textContent = '继续'; $('mMeta').textContent = '已暂停'; return; }
+    var left = +($('mSec').textContent) || 60; if (left >= 60) left = 60;
+    btn.textContent = '暂停';
+    var step = function () { var n = Math.min(3, Math.floor((60 - left) / 15)); $('mCue').textContent = BREAK_CUES[n]; $('mMeta').textContent = '第 ' + (n + 1) + ' / 4 步'; };
+    step();
+    mTimer = setInterval(function () {
+      left--; if (!$('mSec')) { stopMTimer(); return; }
+      $('mSec').textContent = left; $('mRing').setAttribute('stroke-dashoffset', Math.round(RC * (1 - left / 60))); step();
+      if (left <= 0) {
+        stopMTimer(); var t = view.querySelector('.mtip'); if (t) miniBurst(t);
+        $('mCue').textContent = '休息好了，满电复工！'; $('mMeta').textContent = '久坐计时已重置';
+        btn.textContent = '再来'; $('mSec').textContent = '60'; S.sitSec = 0; updateSit();
+      }
+    }, 1000);
+  }
+  function render(keep) {
+    stopMTimer(); S.mantra = null;
+    var top = view.scrollTop;
+    view.innerHTML = { home: homeHtml, moves: movesHtml, gear: gearHtml, me: meHtml }[S.tab]();
+    if (keep) view.scrollTop = top;
+    else { view.scrollTop = 0; view.classList.remove('enter'); void view.offsetWidth; view.classList.add('enter'); }
+    document.querySelectorAll('.tab').forEach(function (t) { t.classList.toggle('on', t.dataset.arg === S.tab); });
+    if (S.tab === 'home') updateSit();
+  }
+  function go(tab) { if (S.lib.open) { S.lib.open = false; libWrap.innerHTML = ''; } if (P.open) closePromo(); S.tab = tab; render(); }
+
+  // ---------- promo: widgets & apple watch ----------
+  var WD = ['日', '一', '二', '三', '四', '五', '六'];
+  function todayLabel() { var d = new Date(); return '周' + WD[d.getDay()] + ' · ' + (d.getMonth() + 1) + '月' + d.getDate() + '日'; }
+  function clockNow() { var d = new Date(); return { h: pad(d.getHours()), m: pad(d.getMinutes()), day: '周' + WD[d.getDay()] + ' ' + d.getDate() }; }
+  var promoWrap = null, promoTimer = null;
+  var P = { open: false, size: 'all', w: 0, notify: false, paired: false };
+  var WATCH_CAPS = ['表盘复杂功能：抬腕就看到本轮久坐', '到点手腕轻震：来一组 2 分钟微动？', '静音跟练：倒计时 + 实时心率', '完成打卡：满电复工，同步回 iPhone'];
+  function sitMin() { return Math.floor(S.sitSec / 60); }
+  function sitFrac() { return Math.min(1, S.sitSec / (S.interval * 60)); }
+  function ringSvg2(size, r, sw, frac, color, track, id) {
+    var c = Math.round(2 * Math.PI * r), h = size / 2;
+    return '<svg viewBox="0 0 ' + size + ' ' + size + '" width="' + size + '" height="' + size + '" aria-hidden="true"><circle cx="' + h + '" cy="' + h + '" r="' + r + '" fill="none" stroke="' + track + '" stroke-width="' + sw + '"/>' +
+      '<circle ' + (id ? 'id="' + id + '" data-c="' + c + '" ' : '') + 'cx="' + h + '" cy="' + h + '" r="' + r + '" fill="none" stroke="' + color + '" stroke-width="' + sw + '" stroke-linecap="round" stroke-dasharray="' + c + '" stroke-dashoffset="' + Math.round(c * (1 - frac)) + '" transform="rotate(-90 ' + h + ' ' + h + ')" style="transition:stroke-dashoffset 1s linear"/></svg>';
+  }
+  function widgetsHtml() {
+    var sel = P.size, dim = function (k) { return sel !== 'all' && sel !== k ? ' dim' : ''; };
+    var nm = listOf('desk')[0] || LIB[0], quick = listOf('desk').slice(0, 3);
+    var bars = S.hourly.map(function (v, i) { return '<i style="height:' + (v * 12 + 4) + 'px;background:' + (i === 5 ? '#FF8A5C' : (v ? '#4CB5AE' : '#262626')) + '"></i>'; }).join('');
+    return '<div class="homemock"><div class="hmtop"><span id="pwClock">' + clockNow().h + ':' + clockNow().m + '</span><span>' + todayLabel() + '</span></div><div class="wgrid">' +
+      '<div><div class="wgt sq' + dim('s') + '"><span class="wk"><span>本轮久坐</span><i class="blink"></i></span><span class="wn" style="margin-top:auto"><span class="pwSit">' + sitMin() + '</span>\'</span><span class="wbar" style="margin:8px 0 6px"><i class="pwBar" style="width:' + (sitFrac() * 100).toFixed(1) + '%"></i></span><span class="wsm">目标 ' + S.interval + '\' · 到点轻震</span></div><p class="wcap">1×1 · 常态</p></div>' +
+      '<div><button class="wgt sq wov press' + dim('s') + '" style="width:100%" data-act="start" data-arg="' + nm.id + '"><span class="wk"><span>该动一动了</span>' + I.boltB.replace('width="26" height="26"', 'width="14" height="14"') + '</span><span class="wn" style="margin-top:auto">60\'</span><span class="wbtn" style="margin-top:8px">点我开练 2 分钟</span></button><p class="wcap">1×1 · 超时提醒</p></div>' +
+      '<div style="grid-column:span 2"><div class="wgt wide' + dim('m') + '"><span class="wring">' + ringSvg2(104, 44, 9, sitFrac(), '#4CB5AE', '#1F3D3B', 'pwRing') + '<b><span class="pwSit">' + sitMin() + '</span>\'</b><span>已久坐</span></span>' +
+        '<span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px"><span style="font-size:10px;font-weight:700;color:#FF8A5C;letter-spacing:1px">下一个微动</span><b style="font-size:15px;font-weight:900">' + nm.name + '</b><span class="d" style="font-size:30px;line-height:1">0' + nm.min + ':00</span>' +
+        '<span style="display:flex;justify-content:space-between;align-items:center;margin-top:2px"><span class="wsm" style="color:#9A9A9A">' + S.micro + ' 次 · ' + S.streak + ' 天</span><button class="wbtn o press" data-act="start" data-arg="' + nm.id + '">' + I.playS + '开始</button></span></span></div><p class="wcap">2×1 · 久坐圆环 + 一键开练</p></div>' +
+      '<div style="grid-column:span 2"><div class="wgt big' + dim('l') + '"><span style="display:flex;justify-content:space-between;align-items:flex-start"><span class="d" style="font-size:24px;line-height:.92;text-transform:uppercase">Take a<br><span style="color:#4CB5AE">Fidget Break.</span></span><span style="text-align:right"><span class="d" style="font-size:24px;line-height:1"><span class="pwSit">' + sitMin() + '</span>\'</span><br><span style="font-size:9px;color:#9A9A9A">本轮久坐</span></span></span>' +
+        '<span class="wbars">' + bars + '</span>' +
+        quick.map(function (m, i) { return '<span class="wqm"><b>0' + (i + 1) + '</b><span>' + m.name + '</span><button class="press" data-act="start" data-arg="' + m.id + '" aria-label="开始 ' + m.name + '">' + I.playS + '</button></span>'; }).join('') +
+        '<span style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#9A9A9A"><span>本周已打卡 5 天</span><span class="d" style="font-size:14px;color:#FF8A5C">' + S.micro + ' TODAY</span></span></div><p class="wcap">大号 · 今日节奏 + 快捷动作</p></div>' +
+      '</div></div>';
+  }
+  function watchScreenHtml(i) {
+    var c = clockNow(), f = sitFrac();
+    if (i === 0) return '<div class="ws"><span class="t1"><span style="color:#4CB5AE">FIDGETFIT</span><span style="color:#9A9A9A">' + c.day + '</span></span>' +
+      '<span class="big" style="font-size:58px;margin-top:6px">' + c.h + '<br><span style="color:#FF8A5C">' + c.m + '</span></span>' +
+      '<span class="row"><span class="wrun" style="width:46px;height:46px">' + ringSvg2(46, 19, 4, f, '#4CB5AE', '#1F3D3B', 'pwWRing') + '<b class="d" style="position:relative;font-size:15px"><span class="pwSit">' + sitMin() + '</span>\'</b></span>' +
+      '<span style="text-align:right"><b class="d" style="font-size:20px">' + S.micro + '</b><br><span style="font-size:9px;color:#9A9A9A">今日微动</span></span></span></div>';
+    if (i === 1) return '<div class="ws or"><span class="t1"><span>轻触提醒</span><span>' + c.h + ':' + c.m + '</span></span>' +
+      '<span class="big" style="font-size:40px;margin-top:10px">SIT 60\'</span><span style="font-size:12px;font-weight:900;margin-top:6px;line-height:1.35">来一组 2 分钟<br>颈部唤醒？</span>' +
+      '<span style="margin-top:auto;height:30px;border-radius:15px;background:#000;color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center">开始微动</span></div>';
+    if (i === 2) return '<div class="ws" style="align-items:center"><span class="t1" style="width:100%"><span style="color:#FF8A5C">颈部唤醒 2/4</span><span>♥ 98</span></span>' +
+      '<span class="wrun" style="width:128px;height:128px;margin-top:6px">' + ringSvg2(128, 56, 8, .6, '#FF8A5C', '#2A1A14') +
+      '<span style="position:relative">' + fig('tilt', 34, '#4CB5AE', 7, true) + '</span><b class="d" style="position:relative;font-size:26px;line-height:1">0:12</b></span>' +
+      '<span style="font-size:11px;font-weight:900;margin-top:4px">左右侧颈拉伸</span></div>';
+    return '<div class="ws or"><span class="t1"><span>DONE · 打卡成功</span></span><span class="big" style="font-size:27px;margin-top:12px;text-transform:uppercase">Fully<br>Charged.</span>' +
+      '<span style="font-size:12px;font-weight:900;margin-top:8px">+2 MIN · +40 XP</span><span style="margin-top:auto;font-size:10px;font-weight:700">已同步到 iPhone</span></div>';
+  }
+  function promoHtml() {
+    var feats = [
+      ['#FF8A5C', I.bell, '久坐轻触提醒', '到点手腕轻震，会议里也不打扰别人'],
+      ['#4CB5AE', I.playS.replace('width="12" height="12"', 'width="16" height="16"'), '抬腕就能跟练', '2 分钟倒计时，表冠滚动选动作'],
+      ['#fff', '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.5-9.3A5 5 0 0 1 12 6a5 5 0 0 1 9.5 5.7C19.5 16.4 12 21 12 21z"/></svg>', '实时心率', '跟练时显示心率，完成后生成小结'],
+      ['#4CB5AE', I.check, '打卡自动同步', '手表上完成，iPhone 和小组件同步更新']
+    ];
+    return '<div class="promo" id="promo" role="dialog" aria-label="小组件与 Apple Watch"><div class="page">' +
+      '<div class="libtop"><button class="back press" data-act="closePromo">' + I.back + '返回</button><span class="kicker">多端联动 · NEW</span></div>' +
+      '<div style="display:flex;flex-direction:column;gap:12px"><h1 class="ptitle">Beyond<br>the <span>phone.</span></h1><p class="plead">不用打开 App。抬腕、看一眼主屏幕，就知道自己坐了多久，一键就能开练。</p></div>' +
+      '<section class="psec"><span class="no">01 · WIDGETS</span><h2>Home Screen<small>桌面小组件 · 三种尺寸</small></h2>' +
+      '<div class="sizes" role="tablist">' + [['all', '全部'], ['s', '1×1'], ['m', '2×1'], ['l', '大号']].map(function (x) { return '<button role="tab" aria-selected="' + (P.size === x[0]) + '" class="' + (P.size === x[0] ? 'on' : '') + '" data-act="pSize" data-arg="' + x[0] + '">' + x[1] + '</button>'; }).join('') + '</div>' +
+      '<div id="pWidgets">' + widgetsHtml() + '</div>' +
+      '<div class="howto"><div><b>01</b><span>长按主屏幕空白处</span></div><div><b>02</b><span>点左上角「+」搜索 FidgetFit</span></div><div><b>03</b><span>选尺寸，放到喜欢的位置</span></div></div></section>' +
+      '<section class="psec"><span class="no">02 · APPLE WATCH</span><h2>On your wrist<small>Apple Watch · 抬腕微动</small></h2>' +
+      '<div class="watchstage"><span class="wband t" aria-hidden="true"></span><div class="wcase"><button class="wcrown press" data-act="wNext" aria-label="数码表冠：下一屏"></button><span class="wbtn2" aria-hidden="true"></span><div class="wscr" id="wScr">' + watchScreenHtml(P.w) + '</div></div><span class="wband b" aria-hidden="true"></span>' +
+      '<span class="wcapt" id="wCap">' + WATCH_CAPS[P.w] + '</span><div class="wdots" id="wDots">' + WATCH_CAPS.map(function (c, i) { return '<button class="' + (i === P.w ? 'on' : '') + '" data-act="wGo" data-arg="' + i + '" aria-label="第 ' + (i + 1) + ' 屏"><i></i></button>'; }).join('') + '</div></div>' +
+      '<div class="feats">' + feats.map(function (f, i) { return '<div class="feat" style="animation-delay:' + i * 0.05 + 's"><i style="background:' + f[0] + '">' + f[1] + '</i><b>' + f[2] + '</b><span>' + f[3] + '</span></div>'; }).join('') + '</div></section>' +
+      '<section class="pcta"><button class="main press" data-act="pair">' + I.watch + (P.paired ? '已连接 · 再看一遍配对' : '体验连接 Apple Watch') + '</button>' +
+      '<button class="sub press' + (P.notify ? ' on' : '') + '" data-act="pNotify">' + (P.notify ? I.check + '已预约，上线第一时间通知你' : I.bell + '预约上线提醒') + '</button>' +
+      '<p class="pnote">小组件与 Apple Watch 将随 FidgetFit iOS 版上线。<br>本页为功能介绍，配对为演示流程。</p></section></div></div>';
+  }
+  function paintWatch() {
+    var scr = $('wScr'); if (!scr) return;
+    scr.innerHTML = watchScreenHtml(P.w);
+    $('wCap').textContent = WATCH_CAPS[P.w];
+    $('wDots').querySelectorAll('button').forEach(function (b, i) { b.classList.toggle('on', i === P.w); });
+  }
+  function startWatchCycle() { clearInterval(promoTimer); promoTimer = setInterval(function () { P.w = (P.w + 1) % 4; paintWatch(); }, 3000); }
+  function openPromo() {
+    if (!promoWrap) { promoWrap = document.createElement('div'); promoWrap.id = 'promoWrap'; libWrap.parentNode.insertBefore(promoWrap, libWrap.nextSibling); }
+    P.open = true; P.w = 0; promoWrap.innerHTML = promoHtml(); startWatchCycle();
+  }
+  function closePromo() { P.open = false; clearInterval(promoTimer); if (promoWrap) promoWrap.innerHTML = ''; }
+  function updatePromo() {
+    if (!P.open || !$('promo')) return;
+    var m = sitMin(), f = sitFrac();
+    $('promo').querySelectorAll('.pwSit').forEach(function (el) { el.textContent = m; });
+    $('promo').querySelectorAll('.pwBar').forEach(function (el) { el.style.width = (f * 100).toFixed(1) + '%'; });
+    ['pwRing', 'pwWRing'].forEach(function (id) { var r = $(id); if (r) r.setAttribute('stroke-dashoffset', Math.round(+r.dataset.c * (1 - f))); });
+    var ck = $('pwClock'); if (ck) { var c = clockNow(); ck.textContent = c.h + ':' + c.m; }
+  }
+  var pairTimers = [];
+  function pairStep(step) {
+    var body;
+    if (step === 'search') body = '<div class="pair"><span class="spin" aria-hidden="true"></span><h3>正在寻找附近的 Apple Watch</h3><span class="sub">请保持手表解锁，并靠近 iPhone</span></div>';
+    else if (step === 'found') body = '<div class="pair"><h3>找到 1 台手表</h3><button class="dev press" data-act="pairLink">' + I.watch + '<span><b>Momo 的 Apple Watch</b><small>点击连接</small></span>' + I.arrow + '</button></div>';
+    else if (step === 'link') body = '<div class="pair"><span class="spin" aria-hidden="true"></span><h3>正在同步你的动作和设置</h3><span class="prog"><i></i></span><span class="sub">工位列表 · 久坐提醒 · 打卡记录</span></div>';
+    else body = '<div class="pair"><span class="ok">' + I.check + '</span><h3>已连接 Apple Watch</h3><span class="sub">到点时手腕会轻震提醒你动一动</span><span class="demo">演示流程</span></div>' +
+      '<div class="two"><button class="press" style="border:1px solid #3A3A3A" data-act="closeTag">完成</button><button class="press" style="background:#FF8A5C;color:#000" data-act="pairTry">看看手表上的提醒</button></div>';
+    overlay2.innerHTML = '<div class="ov"><button class="backdrop" data-act="pairCancel" aria-label="关闭"></button><div class="sheet" role="dialog" aria-label="连接 Apple Watch"><span class="grab"></span><div style="display:flex;justify-content:space-between;align-items:center"><span class="kicker">连接 APPLE WATCH</span><span class="demo">演示</span></div>' + body + '</div></div>';
+  }
+  function pair() {
+    pairTimers.forEach(clearTimeout); pairTimers = [];
+    pairStep('search');
+    pairTimers.push(setTimeout(function () { pairStep('found'); }, 1700));
+  }
+  // ---------- product sheet ----------
+  function openSheet(id) {
+    var p = findProduct(id); S.sheet = p;
+    var on = !!S.added[id];
+    overlay.innerHTML = '<div class="ov"><button class="backdrop" data-act="closeSheet" aria-label="关闭"></button><div class="sheet" role="dialog" aria-label="' + p.name + '"><span class="grab"></span>' +
+      '<div class="img" style="background:' + p.c + '"><b>' + p.en + '</b></div>' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><span style="display:flex;flex-direction:column;gap:4px"><b style="font-size:20px;font-weight:900">' + p.name + '</b><span style="font-size:13px;color:#9A9A9A">' + p.sub + '</span></span><span class="price" style="white-space:nowrap">' + yuan(p.price) + (p.was ? '<span class="was">' + yuan(p.was) + '</span>' : '') + '</span></div>' +
+      '<div style="display:flex;flex-direction:column;gap:8px"><span class="kicker">绑定后解锁动作</span><div class="mvchips">' + p.moves.map(function (m) { return '<span>' + m + '</span>'; }).join('') + '</div></div>' +
+      '<div class="two" style="margin-top:4px"><button class="press" style="border:1px solid #3A3A3A" data-act="sheetTry">先试练一次</button><button class="press" style="background:' + (on ? '#4CB5AE' : '#fff') + ';color:#000" data-act="sheetAdd">' + (on ? '已在购物袋' : '加入购物袋 · ' + yuan(p.price)) + '</button></div></div></div>';
+  }
+  function closeOverlay() { overlay.innerHTML = ''; S.sheet = null; }
+
+  // ---------- new tag sheet ----------
+  var tagCtx = null;
+  function openNewTag(from) {
+    tagCtx = from;
+    var ideas = TAG_IDEAS.filter(function (n) { return !S.tags.some(function (t) { return t.name === n; }); });
+    overlay2.innerHTML = '<div class="ov"><button class="backdrop" data-act="closeTag" aria-label="关闭"></button><div class="sheet" role="dialog" aria-label="新建标签"><span class="grab"></span>' +
+      '<div style="display:flex;flex-direction:column;gap:4px"><span class="kicker">新建标签</span><h3>建一个自己的动作列表</h3><span class="sub">它会和「工位」「通勤」一样出现在动作页，可以从动作库往里加动作，也能一键连播。</span></div>' +
+      '<label class="field"><span class="sr">标签名称</span><input id="tagInput" maxlength="10" placeholder="例如：肩颈急救" autocomplete="off"></label>' +
+      '<div class="mvchips">' + ideas.map(function (n) { return '<button class="idea press" data-act="fillTag" data-arg="' + n + '">' + n + '</button>'; }).join('') + '</div>' +
+      '<div class="two"><button class="press" style="border:1px solid #3A3A3A" data-act="closeTag">取消</button><button class="press" style="background:#4CB5AE;color:#000" data-act="createTag">创建</button></div></div></div>';
+    setTimeout(function () { var i = $('tagInput'); if (i) i.focus(); }, 350);
+  }
+  function createTag() {
+    var i = $('tagInput'); if (!i) return;
+    var name = i.value.trim();
+    if (!name) { i.focus(); toast('先起个名字'); return; }
+    if (allLists().some(function (l) { return l.name === name; })) { toast('已经有这个列表了'); return; }
+    var t = { id: 't' + Date.now().toString(36), name: name };
+    S.tags.push(t); S.lists[t.id] = []; save();
+    overlay2.innerHTML = '';
+    if (tagCtx === 'lib') { S.lib.target = t.id; refreshLib(true); toast('已创建「' + name + '」，点「添加」放动作进去'); }
+    else { S.scene = t.id; S.query = ''; refreshMoves(); toast('已创建「' + name + '」'); }
+  }
+
+  // ---------- session ----------
+  function stepsFor(m) {
+    if (m.name === '颈部唤醒') return NECK_STEPS.map(function (s) { return { name: s.name, anim: s.anim, cue: CUE[s.anim], dur: 20 }; });
+    var stand = !!STAND[m.anim];
+    return [
+      { name: '进入姿势', anim: 'breathe', cue: stand ? '站稳，双脚与肩同宽，肩膀放松，深吸一口气。' : '坐稳，双脚踩地，肩膀放松，深吸一口气。', dur: 8 },
+      { name: m.name, anim: m.anim, cue: CUE[m.anim], dur: 24 },
+      { name: '放松回正', anim: 'breathe', cue: '慢慢回到起始姿势，抖一抖手和脚，准备复工。', dur: 8 }
+    ];
+  }
+  function run(title, steps, min) {
+    S.sheet = null;
+    S.session = { title: title, steps: steps, min: min, idx: 0, remain: steps[0].dur, paused: false };
+    S.done = false;
+    var segs = steps.map(function () { return '<div><i></i></div>'; }).join('');
+    overlay.innerHTML = '<div class="ov session" id="ses" role="dialog" aria-label="微动跟练">' +
+      '<header><button class="round press" data-act="exit" aria-label="退出微动">' + I.close + '</button><span class="ttl" id="sesTtl"></span><span class="mode"><i class="blink"></i>' + (S.silent ? '静音' : '语音') + '</span></header>' +
+      '<div class="segs" id="sesSegs" style="grid-template-columns:repeat(' + steps.length + ',1fr)">' + segs + '</div>' +
+      '<div class="stagebox"><div class="dial"><span class="glow" aria-hidden="true"></span>' +
+      '<svg class="r" viewBox="0 0 290 290" aria-hidden="true"><circle cx="145" cy="145" r="132" fill="none" stroke="#1C1C1C" stroke-width="10"/><circle id="sesRing" cx="145" cy="145" r="132" fill="none" stroke="#FF8A5C" stroke-width="10" stroke-linecap="round" stroke-dasharray="829" stroke-dashoffset="829" transform="rotate(-90 145 145)" style="transition:stroke-dashoffset 1s linear"/></svg>' +
+      '<div class="c"><span id="sesFig"></span><span class="t" id="sesTime"></span><span class="s" id="sesStatus"></span></div></div>' +
+      '<div class="mv" id="sesMv"><h2 id="sesName"></h2><p id="sesCue"></p></div></div>' +
+      '<div class="ctrls"><button class="sm press" data-act="prev" aria-label="上一个动作">' + I.prev + '</button><button class="lg press" id="sesPlay" data-act="toggle" aria-label="暂停"></button><button class="sm press" data-act="next" aria-label="下一个动作">' + I.next + '</button></div>' +
+      '<div class="upnext"><small>下一个</small><b id="sesNext"></b><span id="sesNextDur"></span></div></div>';
+    updateSession(true);
+  }
+  function start(m) { run(m.name, stepsFor(m), m.min); }
+  function startList(name, list) {
+    run(name, list.map(function (m) { return { name: m.name, anim: m.anim, cue: CUE[m.anim], dur: 20 }; }), list.reduce(function (a, m) { return a + m.min; }, 0));
+  }
+  function updateSession(stepChanged) {
+    var s = S.session; if (!s || !$('ses')) return;
+    var st = s.steps[s.idx], nx = s.steps[s.idx + 1];
+    $('sesTtl').textContent = s.title + ' · ' + (s.idx + 1) + ' / ' + s.steps.length;
+    $('sesTime').textContent = '0:' + pad(s.remain);
+    $('sesRing').setAttribute('stroke-dashoffset', Math.round(C * (1 - s.remain / st.dur)));
+    $('sesStatus').textContent = s.paused ? '已暂停' : (st.anim === 'breathe' ? '跟着呼吸' : '跟着小人做');
+    $('ses').classList.toggle('paused', s.paused);
+    $('sesPlay').innerHTML = s.paused ? I.play : I.pause;
+    $('sesPlay').setAttribute('aria-label', s.paused ? '继续' : '暂停');
+    $('sesSegs').querySelectorAll('i').forEach(function (el, i) {
+      el.style.background = i < s.idx ? '#FFFFFF' : '#FF8A5C';
+      el.style.width = i < s.idx ? '100%' : (i === s.idx ? Math.round((1 - s.remain / st.dur) * 100) + '%' : '0%');
+    });
+    if (stepChanged) {
+      var f = $('sesFig'); f.innerHTML = fig(st.anim, 100, '#FFFFFF', 5, true); f.style.animation = 'none'; void f.offsetWidth; f.style.animation = '';
+      $('sesName').textContent = st.name; $('sesCue').textContent = st.cue;
+      $('sesNext').textContent = nx ? nx.name : '完成，领取今日徽章';
+      $('sesNextDur').textContent = nx ? '0:' + pad(nx.dur) : '';
+      var mv = $('sesMv'); mv.classList.remove('swap'); void mv.offsetWidth; mv.classList.add('swap');
+      if (S.vibe && navigator.vibrate) { try { navigator.vibrate(30); } catch (e) {} }
+    }
+  }
+  function nextStep() {
+    var s = S.session; if (!s) return;
+    if (s.idx >= s.steps.length - 1) { finish(); return; }
+    s.idx++; s.remain = s.steps[s.idx].dur; updateSession(true);
+  }
+  function finish() {
+    var s = S.session;
+    S.xp += 40; if (S.xp >= 1000) { S.xp -= 1000; S.level++; }
+    S.micro++; S.minutes += s.min; S.total++; S.sitSec = 0; S.hourly[5]++; S.badges.power = true; S.done = true;
+    var parts = '', cols = ['#000000', '#FFFFFF', '#4CB5AE'];
+    for (var i = 0; i < 18; i++) {
+      var sz = i % 3 === 0 ? 14 : 10;
+      parts += '<span class="p" style="transform:rotate(' + (i * 20 + (i % 2 ? 6 : 0)) + 'deg)"><i style="width:' + sz + 'px;height:' + sz + 'px;border-radius:' + (i % 4 === 0 ? '3px' : '50%') + ';background:' + cols[i % 3] + ';animation-delay:' + (0.02 * (i % 6)) + 's"></i></span>';
+    }
+    overlay.innerHTML = '<div class="ov done" role="dialog" aria-label="打卡成功">' +
+      '<div class="burst" aria-hidden="true"><span class="rg"></span><span class="rg w"></span>' + parts + '</div>' +
+      '<span style="font-size:13px;font-weight:700;letter-spacing:2px">打卡成功 · DONE</span>' +
+      '<div class="mid"><div class="big">Fully<br>Charged.</div><div style="font-size:20px;font-weight:900;animation:fadeUp .5s ease .5s both">微动一下，满电复工。</div>' +
+      '<div class="stats" style="margin-top:18px;animation:fadeUp .5s ease .65s both"><div><b>+' + s.min + '</b><span>活动分钟</span></div><div><b>+40</b><span>XP</span></div><div><b>' + S.micro + '</b><span>今日微动</span></div></div>' +
+      '<div class="unlock"><i>' + I.boltB + '</i><span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:#FF8A5C;font-weight:700;letter-spacing:1px">徽章解锁</span><b style="font-size:16px;font-weight:900">满电复工</b></span></div></div>' +
+      '<div class="two"><button class="press" style="border:2px solid #000;color:#000" data-act="share">晒到小队</button><button class="press" style="background:#000;color:#fff" data-act="finishDone">回到工位</button></div></div>';
+    if (navigator.vibrate) { try { navigator.vibrate([40, 60, 120]); } catch (e) {} }
+  }
+  function closeDone(msg) { S.session = null; S.done = false; overlay.innerHTML = ''; go('home'); toast(msg); }
+
+  // ---------- actions ----------
+  var A = {
+    tab: function (a) { go(a); },
+    bell: function () { toast('14:00 会议前，记得来一组颈部唤醒'); },
+    start: function (a) { start(BY_ID[a]); },
+    quick: function () { var p = listOf(S.scene); if (!p.length) p = listOf('desk'); start(p[Math.floor(Math.random() * p.length)]); },
+    stand: function (a, el) {
+      S.sitSec = 0; S.standCount++; updateSit(); miniBurst(el);
+      if ($('standN')) $('standN').textContent = S.standCount;
+      toast('今天第 ' + S.standCount + ' 次站起来，干得漂亮');
+    },
+    poke: function () {
+      S.pokes++;
+      var w = $('heroFig'); replay(w, 'boing');
+      if (S.pokes === 7) { say('戳出腹肌了！'); toast('解锁隐藏徽章「戳戳乐」'); S.badges.poke = true; return; }
+      say(POKE_LINES[(S.pokes - 1) % POKE_LINES.length]);
+      if (navigator.vibrate) { try { navigator.vibrate(15); } catch (e) {} }
+    },
+    shuffle: function () {
+      var l = listOf('desk'); if (l.length < 2) return;
+      S.nextIdx = (S.nextIdx + 1) % l.length;
+      var card = $('nextCard'); replay(card, 'flip'); replay($('shuf'), 'spin');
+      setTimeout(function () {
+        var m = nextMove(), ni = nextInfo(m);
+        $('heroFig').innerHTML = fig(ni.anim, 104, '#4CB5AE', 4);
+        $('nextTime').textContent = ni.time; $('nextTitle').textContent = ni.title; $('nextSub').textContent = tagsText(m);
+      }, 220);
+      setTimeout(function () { say('换我上场！'); }, 460);
+    },
+    startNext: function () { start(nextMove()); },
+    insight: function (a, el) {
+      S.insight = !S.insight; $('insight').classList.toggle('on', S.insight);
+      el.setAttribute('aria-expanded', S.insight); $('sitMore').textContent = S.insight ? '收起 ▴' : '看详情 ▾';
+    },
+    tipNext: function () {
+      S.tipIdx = (S.tipIdx + 1) % TIPS.length;
+      var t = $('tipText'); t.textContent = TIPS[S.tipIdx]; replay(t, 'swap');
+      $('tipNo').textContent = pad(S.tipIdx + 1) + '/' + pad(TIPS.length);
+      $('tipDots').querySelectorAll('i').forEach(function (d, i) { d.classList.toggle('on', i === S.tipIdx); });
+    },
+    tipClose: function () {
+      S.tipHidden = true; var c = $('tipCard');
+      c.style.transition = 'opacity .25s ease, transform .25s ease'; c.style.opacity = '0'; c.style.transform = 'scale(.96)';
+      setTimeout(function () { c.remove(); }, 260); toast('好，小贴士先收起来');
+    },
+    marq: function () { S.fast = !S.fast; $('marq').classList.toggle('fast', S.fast); toast(S.fast ? '加速！动起来' : '回到常速'); },
+    mantra: function (a, el) { mantra(a, el); },
+    openPromo: openPromo,
+    closePromo: closePromo,
+    pSize: function (a) {
+      P.size = a; $('pWidgets').innerHTML = widgetsHtml();
+      document.querySelectorAll('.sizes button').forEach(function (b) { var on = b.dataset.arg === a; b.classList.toggle('on', on); b.setAttribute('aria-selected', on); });
+    },
+    wGo: function (a) { P.w = +a; paintWatch(); startWatchCycle(); },
+    wNext: function () { P.w = (P.w + 1) % 4; paintWatch(); startWatchCycle(); if (navigator.vibrate) { try { navigator.vibrate(10); } catch (e) {} } },
+    pNotify: function (a, el) {
+      P.notify = !P.notify;
+      el.classList.toggle('on', P.notify);
+      el.innerHTML = P.notify ? I.check + '已预约，上线第一时间通知你' : I.bell + '预约上线提醒';
+      toast(P.notify ? '已预约上线提醒' : '已取消预约');
+    },
+    pair: pair,
+    pairLink: function () { pairStep('link'); pairTimers.push(setTimeout(function () { P.paired = true; pairStep('done'); if (navigator.vibrate) { try { navigator.vibrate([30, 50, 30]); } catch (e) {} } }, 1800)); },
+    pairCancel: function () { pairTimers.forEach(clearTimeout); overlay2.innerHTML = ''; },
+    pairTry: function () {
+      overlay2.innerHTML = '';
+      var btn = document.querySelector('.pcta .main'); if (btn) btn.innerHTML = I.watch + '已连接 · 再看一遍配对';
+      P.w = 1; paintWatch(); startWatchCycle();
+      var ws = document.querySelector('.watchstage'); if (ws) ws.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    },
+    mClose: closeMantra,
+    mSwap: function () {
+      stopMTimer(); S.chIdx = (S.chIdx + 1) % CHALLENGES.length;
+      var t = $('mText'); t.textContent = CHALLENGES[S.chIdx]; replay(t, 'swap');
+      $('mRow').innerHTML = '<span>完成 +5 XP</span><span class="bt"><button class="g press" data-act="mSwap">换一个</button><button class="b press" data-act="mGo">开始</button></span>';
+    },
+    mGo: mChallenge,
+    mFact: function () {
+      S.factIdx = (S.factIdx + 1) % FACTS.length; var t = $('mText'); t.textContent = FACTS[S.factIdx]; replay(t, 'swap');
+      $('mNo').textContent = (S.factIdx + 1) + '/' + FACTS.length;
+    },
+    mBreak: mBreak,
+    scene: function (a) { S.scene = a; S.query = ''; go('moves'); },
+    hi5: function (a) {
+      if (S.hi5[a]) return; S.hi5[a] = true;
+      var p = PEOPLE.filter(function (x) { return x.id === a; })[0];
+      $('hi-' + a).innerHTML = squadBtn(p); toast('已给 ' + p.name + ' 击掌，一起动起来');
+    },
+    chip: function (a) { S.scene = a; S.query = ''; if ($('search')) $('search').value = ''; refreshMoves(); },
+    fav: function (a) {
+      var on = !!S.favs[a]; S.favs[a] = !on; save(); var m = BY_ID[a];
+      $('fav-' + a).innerHTML = favBtn(m); toast(on ? '已取消收藏' : '已收藏 · ' + m.name);
+    },
+    playList: function () { var l = listOf(S.scene); if (l.length) startList(listName(S.scene), l); },
+    newTag: function (a) { openNewTag(a); },
+    fillTag: function (a) { var i = $('tagInput'); if (i) { i.value = a; i.focus(); } },
+    createTag: createTag,
+    closeTag: function () { pairTimers.forEach(clearTimeout); overlay2.innerHTML = ''; },
+    // library
+    openLib: function (a) { openLib(a); },
+    closeLib: closeLib,
+    libPart: function (a) { S.lib.part = a; refreshLib(true); },
+    libTarget: function (a) {
+      S.lib.target = a; refreshLib(false);
+      LIB.forEach(function (m) { var el = $('la-' + m.id); if (el) el.innerHTML = libAddBtn(m); });
+    },
+    libAdd: function (a) {
+      var list = S.lists[S.lib.target] = S.lists[S.lib.target] || [], i = list.indexOf(a), name = listName(S.lib.target);
+      if (i >= 0) list.splice(i, 1); else list.push(a);
+      save(); $('la-' + a).innerHTML = libAddBtn(BY_ID[a]); refreshLib(false);
+      toast(i >= 0 ? '已从「' + name + '」移除' : '已添加到「' + name + '」');
+    },
+    libStart: function (a) { start(BY_ID[a]); },
+    // gear
+    bag: function () { toast('购物袋 ' + S.bag + ' 件 · 合计 ' + yuan(bagTotal())); },
+    sheet: function (a) { openSheet(a); },
+    add: function (a) { toggleAdd(a); },
+    eap: function () { toast('已提交咨询，顾问会联系你的 HR'); },
+    closeSheet: closeOverlay,
+    sheetAdd: function () { var p = S.sheet; closeOverlay(); if (p && !S.added[p.id]) toggleAdd(p.id); },
+    sheetTry: function () { var p = S.sheet; if (p) start(BY_NAME[p.moves[0]] || LIB[0]); },
+    // session
+    exit: function () { S.session = null; overlay.innerHTML = ''; },
+    toggle: function () { if (!S.session) return; S.session.paused = !S.session.paused; updateSession(false); },
+    next: nextStep,
+    prev: function () { var s = S.session; if (!s) return; s.idx = Math.max(0, s.idx - 1); s.remain = s.steps[s.idx].dur; updateSession(true); },
+    finishDone: function () { closeDone('已打卡 · 久坐计时已重置'); },
+    share: function () { closeDone('已晒到工位小队'); },
+    // me
+    badge: function (a) { var b = BADGES.filter(function (x) { return x.id === a; })[0]; toast(S.badges[a] ? '已获得 · ' + b.name : '继续微动解锁「' + b.name + '」'); },
+    switch: function (a, el) { S[a] = !S[a]; el.setAttribute('aria-checked', S[a] ? 'true' : 'false'); toast(el.dataset.label + (S[a] ? ' 已开启' : ' 已关闭')); },
+    ival: function (a) { S.interval = +a; $('ivals').innerHTML = ivalsHtml(); toast('每 ' + a + ' 分钟提醒你动一动'); }
+  };
+  document.addEventListener('click', function (e) {
+    if (S.mantra && e.target.closest('.mtip') && !e.target.closest('button')) {
+      // the floating tip never blocks the title: a tap on its body passes through to the line underneath
+      var under = document.elementsFromPoint(e.clientX, e.clientY).map(function (n) { return n.closest && n.closest('.hero .ln'); }).filter(Boolean)[0];
+      if (under) { mantra(under.dataset.arg, under); return; }
+    }
+    if (S.mantra && !e.target.closest('.mtip') && !e.target.closest('.hero .ln')) closeMantra();
+    var el = e.target.closest('[data-act]'); if (!el) return;
+    var fn = A[el.dataset.act]; if (fn) fn(el.dataset.arg, el);
+  });
+  document.addEventListener('input', function (e) {
+    if (e.target.id === 'search') { S.query = e.target.value; $('chips').innerHTML = chipsHtml(); $('moveList').innerHTML = listHtml(); $('listTitle').innerHTML = listTitle(); }
+    if (e.target.id === 'libSearch') { S.lib.q = e.target.value; $('libList').innerHTML = libListHtml(); $('libCount').textContent = libHeadCount(); }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && e.target.id === 'tagInput') { e.preventDefault(); createTag(); return; }
+    if (e.key !== 'Escape') return;
+    if (overlay2.innerHTML) { overlay2.innerHTML = ''; return; }
+    if (overlay.innerHTML) { if (S.done) closeDone('已打卡'); else { S.session = null; closeOverlay(); } return; }
+    if (P.open) { closePromo(); return; }
+    if (S.lib.open) closeLib();
+  });
+
+  // ---------- clock ----------
+  setInterval(function () {
+    var s = S.session;
+    if (s && !S.done) {
+      if (s.paused) return;
+      s.remain--;
+      if (s.remain <= 0) { nextStep(); return; }
+      updateSession(false);
+    } else if (!s) {
+      S.sitSec++;
+      if (S.tab === 'home') updateSit();
+      updatePromo();
+    }
+  }, 1000);
+
+  // ---------- PWA: install, offline, shortcuts ----------
+  var deferredPrompt = null;
+  var isStandalone = function () { return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true; };
+  var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  function installSub() {
+    if (isStandalone()) return '已安装，从主屏幕打开就是全屏 App';
+    if (isIOS) return 'Safari 里点「分享」→「添加到主屏幕」';
+    return deferredPrompt ? '离线可用，像原生 App 一样全屏打开' : '用 Chrome / Edge 打开本页即可安装';
+  }
+  function installBtn() {
+    if (isStandalone()) return '<button class="installbtn done" disabled>已安装</button>';
+    return '<button class="installbtn press" data-act="install">' + (isIOS ? '怎么装' : '安装') + '</button>';
+  }
+  function refreshInstall() { if (S.tab === 'me') render(true); }
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferredPrompt = e; refreshInstall(); });
+  window.addEventListener('appinstalled', function () { deferredPrompt = null; toast('已添加到主屏幕'); refreshInstall(); });
+  A.install = function () {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(function (r) { if (r.outcome !== 'accepted') toast('随时可以在这里再安装'); deferredPrompt = null; refreshInstall(); });
+    } else if (isIOS) toast('点底部「分享」→「添加到主屏幕」');
+    else toast('在浏览器菜单里选「安装应用」');
+  };
+  window.addEventListener('offline', function () { toast('已离线，动作和计时照常可用'); });
+  window.addEventListener('online', function () { toast('网络已恢复'); });
+  if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').then(function (reg) {
+        reg.addEventListener('updatefound', function () {
+          var nw = reg.installing; if (!nw) return;
+          nw.addEventListener('statechange', function () {
+            if (nw.state === 'installed' && navigator.serviceWorker.controller) toast('新版本已就绪，下次打开生效');
+          });
+        });
+      }).catch(function () {});
+    });
+  }
+  // home-screen shortcuts (long-press the app icon)
+  (function () {
+    var q = new URLSearchParams(location.search).get('action');
+    if (!q) return;
+    history.replaceState(null, '', location.pathname);
+    setTimeout(function () {
+      if (q === 'quick') A.quick();
+      else if (q === 'library') { go('moves'); openLib(S.scene); }
+      else if (q === 'devices') openPromo();
+    }, 300);
+  })();
+
+  render();
+})();
+</script>
+</body>
+</html>

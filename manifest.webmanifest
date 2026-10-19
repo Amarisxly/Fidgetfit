@@ -1,0 +1,80 @@
+{
+  "id": "./",
+  "name": "FidgetFit 轻弹玩家",
+  "short_name": "FidgetFit",
+  "description": "职场久坐族的微运动 App：久坐提醒、2 分钟跟练、100 个微动作动作库。",
+  "lang": "zh-CN",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "portrait",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "categories": [
+    "health",
+    "fitness",
+    "lifestyle"
+  ],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "开始微动",
+      "short_name": "微动",
+      "description": "随机来一组 2 分钟工位微动",
+      "url": "./?action=quick",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "动作库",
+      "short_name": "动作库",
+      "description": "打开 100 个微动作的动作库",
+      "url": "./?action=library",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "小组件 & Apple Watch",
+      "short_name": "多端联动",
+      "description": "查看桌面小组件和 Apple Watch 功能介绍",
+      "url": "./?action=devices",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}
