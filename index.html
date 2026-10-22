@@ -85,6 +85,9 @@ html.embedded{--sat:0px;--sab:0px;--top:20px}
 .fab span::before{content:'';position:absolute;inset:-4px;border-radius:34px;border:2px solid var(--orange);animation:ping 1.8s ease-out infinite}
 
 /* ---------- shared ---------- */
+.langpill{display:flex;align-items:center;height:30px;padding:3px;border-radius:999px;border:1px solid var(--line2);font-size:11px;font-weight:900;letter-spacing:.5px;flex-shrink:0}
+.langpill span{height:22px;min-width:26px;padding:0 7px;border-radius:999px;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:background .2s,color .2s}
+.langpill span.on{background:#fff;color:#000}
 .round{width:44px;height:44px;border-radius:22px;border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
 .kicker{font-size:12px;color:var(--muted);letter-spacing:1px}
 .h2row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
@@ -154,11 +157,11 @@ html.embedded{--sat:0px;--sab:0px;--top:20px}
 .marquee span{padding-right:28px}
 .next{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:12px;animation:fadeUp .6s ease .25s both}
 .next .figwrap{display:block}
-.figbtn{position:absolute;right:4px;top:50px;padding:0;z-index:2}
+.figbtn{position:absolute;right:4px;top:100px;padding:0;z-index:2}
 .next .nm-main{padding-right:96px;display:flex;flex-direction:column;gap:12px}
 .figbtn .figwrap.boing{animation:boing .6s cubic-bezier(.3,1.6,.5,1)}
-.bubble{position:absolute;right:34px;top:-30px;background:#fff;color:#000;font-size:12px;font-weight:900;padding:7px 11px;border-radius:14px;white-space:nowrap;pointer-events:none;animation:popIn .3s ease both;z-index:3}
-.bubble::after{content:'';position:absolute;right:16px;bottom:-5px;width:10px;height:10px;background:#fff;transform:rotate(45deg);border-radius:2px}
+.bubble{position:absolute;right:0;bottom:calc(100% + 6px);width:max-content;max-width:92px;text-align:center;line-height:1.2;background:#fff;color:#000;font-size:11.5px;font-weight:900;padding:7px 11px;border-radius:14px;pointer-events:none;animation:popIn .3s ease both;z-index:3}
+.bubble::after{content:'';position:absolute;right:42px;bottom:-5px;width:10px;height:10px;background:#fff;transform:rotate(45deg);border-radius:2px}
 .bubble.hint{animation:popIn .3s ease both,bob 1.2s ease-in-out .3s infinite}
 .bubble.gone{opacity:0;transform:scale(.6);transition:opacity .2s ease,transform .2s ease}
 .next.flip{animation:flip .45s ease both}
@@ -339,6 +342,10 @@ html.embedded{--sat:0px;--sab:0px;--top:20px}
 .days7 .c.done{background:var(--mint);color:#000;animation:popIn .4s ease both}
 .days7 .c.today{border:2px solid var(--orange);color:var(--orange);font-family:var(--display);font-size:15px}
 .days7 .c.future{border:1px dashed #3A3A3A}
+.days7 .c.miss{border:1px solid #2A2A2A;background:#121212}
+.days7 .c.today.got{background:var(--orange);color:#000;border-color:var(--orange)}
+.days7 .c.today:not(.got){animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,138,92,.5)}50%{box-shadow:0 0 0 6px rgba(255,138,92,0)}}
 .days7 .now{color:#fff;font-weight:700}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .bdg{height:116px;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-size:12px;font-weight:700;animation:popIn .4s ease both}
@@ -484,7 +491,17 @@ html.embedded{--sat:0px;--sab:0px;--top:20px}
 .dial svg.r{position:absolute;inset:0;width:100%;height:100%}
 .dial .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
 .dial .t{font-family:var(--display);font-size:clamp(40px,7.5vh,66px);line-height:1;font-variant-numeric:tabular-nums}
-.dial .s{font-size:12px;color:var(--soft);letter-spacing:2px}
+.addt{height:30px;padding:0 14px;border-radius:999px;border:1px solid var(--line2);font-size:12px;font-weight:900;color:var(--mint);margin-top:4px}
+.addt[disabled]{color:var(--muted);border-style:dashed}
+.dial .t.bump{animation:tBump .4s cubic-bezier(.3,1.6,.5,1)}
+@keyframes tBump{0%{transform:scale(1)}40%{transform:scale(1.12);color:var(--mint)}100%{transform:scale(1)}}
+.dial .s.ok{color:var(--mint);font-weight:900}
+.dial.buzz{animation:dialBuzz .5s ease}
+.dial.buzz::after{content:'';position:absolute;inset:-2%;border-radius:50%;border:3px solid var(--mint);animation:dialRipple .9s ease-out both;pointer-events:none}
+@keyframes dialBuzz{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px) rotate(-1deg)}40%{transform:translateX(5px) rotate(1deg)}60%{transform:translateX(-3px)}80%{transform:translateX(3px)}}
+@keyframes dialRipple{0%{opacity:.9;transform:scale(.96)}100%{opacity:0;transform:scale(1.12)}}
+.dial .s{font-size:12px;color:var(--soft);letter-spacing:2px;max-width:64%;text-align:center;line-height:1.3}
+html.lang-en .dial .s{letter-spacing:.5px}
 #sesFig{animation:popIn .4s ease both}
 #sesFig svg{width:clamp(56px,11vh,100px);height:auto}
 .mv{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;flex-shrink:0}
@@ -500,18 +517,18 @@ html.embedded{--sat:0px;--sab:0px;--top:20px}
 .upnext span{font-family:var(--display);font-size:16px;color:var(--mint)}
 .session.paused *{animation-play-state:paused !important}
 
-.done{background:var(--orange);color:#000;padding:calc(var(--top) + var(--sat)) 20px calc(32px + var(--sab));display:flex;flex-direction:column;gap:20px;overflow:hidden;animation:fadeIn .3s ease both}
+.ov.done{background:var(--orange);color:#000;padding:calc(var(--top) + var(--sat)) 20px calc(32px + var(--sab));display:flex;flex-direction:column;gap:20px;overflow:hidden;animation:fadeIn .3s ease both}
 .burst{position:absolute;left:50%;top:38%;width:0;height:0;pointer-events:none}
 .burst .rg{position:absolute;left:-90px;top:-90px;width:180px;height:180px;border-radius:90px;border:3px solid #000;animation:ringOut 1.2s ease-out both}
 .burst .rg.w{border-color:#fff;animation-delay:.25s}
 .burst .p{position:absolute;left:0;top:0;width:0;height:0}
 .burst .p i{position:absolute;left:-6px;top:-6px;display:block;animation:burst 1.2s cubic-bezier(.15,.7,.3,1) both}
-.done{overflow-y:auto}
-.done .big{font-family:var(--display);font-size:clamp(60px,11vh,96px);line-height:.86;text-transform:uppercase;animation:letter .7s cubic-bezier(.2,.8,.2,1) .2s both}
-.done .mid{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;position:relative}
-.done .stats div{border-color:#000}
-.done .stats b{font-size:34px}
-.done .stats span{color:#000;font-weight:700}
+.ov.ov.done{overflow-y:auto}
+.ov.done .big{font-family:var(--display);font-size:clamp(60px,11vh,96px);line-height:.86;text-transform:uppercase;animation:letter .7s cubic-bezier(.2,.8,.2,1) .2s both}
+.ov.done .mid{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;position:relative}
+.ov.done .stats div{border-color:#000}
+.ov.done .stats b{font-size:34px}
+.ov.done .stats span{color:#000;font-weight:700}
 .unlock{margin-top:10px;background:#000;color:#fff;border-radius:22px;padding:16px;display:flex;align-items:center;gap:14px;animation:popIn .5s ease .9s both}
 .unlock i{width:52px;height:52px;border-radius:26px;background:var(--orange);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 
@@ -621,6 +638,333 @@ html.embedded{--sat:0px;--sab:0px;--top:20px}
 </div>
 
 <script>
+var FF_EN = {
+// ---- meta / shell ----
+"职场久坐族的微运动 App：久坐提醒、2 分钟跟练、100 个微动作动作库。": "A micro-workout app for desk workers: sit reminders, 2-minute guided moves and a 100-move library.",
+"FidgetFit 轻弹玩家": "FidgetFit",
+"FIDGETFIT · 轻弹玩家 · APP": "FIDGETFIT · APP",
+"首个专注于职场久坐族的微运动潮流品牌。把工位变成健身房，把焦虑变成多巴胺。": "The first micro-workout brand for people who sit all day. Turn your desk into a gym and your stress into dopamine.",
+"点「开始微动」体验完整跟练": "Tap “Start” for a full guided session",
+"中间橙色按钮随机开练": "The orange center button starts a random move",
+"「动作」页进入 100 个动作库，可添加到列表": "Open the 100-move library from “Moves” and add to your lists",
+"首页「NEW」入口：桌面小组件 & Apple Watch 介绍": "The “NEW” card on Today introduces widgets & Apple Watch",
+"装备可加购、设置可开关": "Add gear to your bag and toggle settings",
+"主导航": "Main navigation",
+"今日": "Today", "动作": "Moves", "开始随机微动": "Start a random move", "微动": "Move", "装备": "Gear", "我的": "Me",
+"抖腿星人 Momo": "Fidget Momo",
+// ---- move steps ----
+"耳朵慢慢靠近肩膀，另一侧颈部有拉伸感，左右交替。": "Ease your ear toward your shoulder until the other side stretches. Switch sides.",
+"下巴向锁骨方向收，后颈拉长，再慢慢抬回正中。": "Tuck your chin toward your collarbone, lengthen the back of your neck, then lift back slowly.",
+"肩膀不动，头慢慢转向一侧看到极限，回正再换边。": "Keep shoulders still, turn your head as far as is comfortable, return and switch.",
+"吸气时双肩耸向耳朵，呼气时重重放下，感受肩膀变轻。": "Inhale and shrug to your ears, exhale and drop them. Feel your shoulders lighten.",
+"肩膀向前、向上、向后画大圈，动作越慢越放松。": "Roll your shoulders forward, up and back in big circles. Slower is better.",
+"双肘向后打开，像要夹住背后的一支笔，停 2 秒再放松。": "Pull your elbows back as if pinching a pen between your shoulder blades. Hold 2 s, release.",
+"双臂向上伸到最高点，吸气延展，呼气慢慢放下。": "Reach both arms up high as you inhale, lower them slowly as you exhale.",
+"双手向前伸，手腕顺时针、逆时针各转几圈。": "Reach your hands forward and circle your wrists both ways.",
+"用力握拳 2 秒，再把五指全部张开，跟着节拍重复。": "Squeeze a fist for 2 s, then spread all five fingers. Repeat to the beat.",
+"脚尖着地，膝盖快速小幅弹动，把抖腿变成训练。": "Toes down, bounce your knees in quick small pulses. Leg-jiggling, now a workout.",
+"坐稳后单腿向前伸直，停 2 秒，左右交替。": "Sit tall, straighten one leg forward, hold 2 s, switch.",
+"脚尖画圈或勾脚绷脚，让脚踝和小腿血液流动起来。": "Circle your toes or flex and point to get blood moving in ankles and calves.",
+"双脚并拢，慢慢踮起脚尖到最高点，再慢慢落下。": "Feet together, rise slowly onto your toes, then lower slowly.",
+"双脚与肩同宽，臀部向后坐，双手前平举，再站起。": "Feet shoulder-width, sit your hips back with arms forward, then stand.",
+"原地交替抬膝，手臂自然摆动，保持呼吸节奏。": "March in place, arms swinging naturally, keep your breathing steady.",
+"一侧手臂上举，身体向另一侧弯，感受侧腰被拉长。": "Raise one arm and lean to the other side. Feel your side lengthen.",
+"坐直后上半身转向一侧，手扶椅背，保持呼吸再换边。": "Sit tall, rotate your upper body holding the chair back, breathe, switch.",
+"骨盆前后慢慢摇动，腰背跟着弯曲、伸展。": "Slowly rock your pelvis forward and back, letting your spine flex and extend.",
+"鼻吸 4 拍让腹部鼓起，屏住 4 拍，嘴呼 6 拍。": "Breathe in through your nose for 4, hold for 4, out through your mouth for 6.",
+"头不动，眼球依次看向左、上、右、下，再闭眼休息。": "Keep your head still, look left, up, right, down, then close your eyes.",
+// ---- scenes / parts ----
+"工位": "Desk", "通勤": "Commute", "会议": "Meeting", "差旅": "Travel", "居家": "Home",
+"颈肩": "Neck", "手腕": "Wrists", "腰背": "Back", "下肢": "Legs", "眼部": "Eyes", "呼吸": "Breath", "全身": "Full body",
+// ---- 100 moves ----
+"颈部唤醒": "Neck Wake-up", "侧颈拉伸": "Side Neck Stretch", "下巴找锁骨": "Chin to Collarbone", "慢速转头": "Slow Head Turn",
+"收下巴抗前倾": "Chin Tuck", "耸肩放松": "Shrug & Drop", "肩部绕环": "Shoulder Rolls", "肩胛后夹": "Blade Squeeze",
+"斜方肌拉伸": "Trap Stretch", "抱头低头拉伸": "Assisted Neck Bow", "颈部米字操": "Neck Star Drill", "肩胛画圈": "Blade Circles",
+"胸前开肩": "Chest Opener", "上举够天花板": "Reach the Ceiling", "侧向够远": "Side Reach", "天鹅颈回正": "Swan Neck Reset",
+"头部画半圆": "Head Half-circles", "双肩下沉": "Shoulders Down", "颈枕拉伸": "Neck Pillow Stretch", "靠背开胸": "Chair-back Opener",
+"手腕旋转 + 握力环": "Wrist Spin + Grip Ring", "手腕画圈": "Wrist Circles", "祈祷式腕拉伸": "Prayer Wrist Stretch", "反向腕拉伸": "Reverse Wrist Stretch",
+"握拳-张开": "Fist & Spread", "静音握力环": "Silent Grip Ring", "地铁指节握力": "Subway Finger Grip", "筋膜球滚掌心": "Palm Ball Roll",
+"手指逐个对捏": "Finger Taps", "甩手放松": "Hand Shake-out", "前臂内外旋": "Forearm Twists", "鼠标手舒缓": "Mouse-hand Relief",
+"拇指拉伸": "Thumb Stretch", "弹力带腕屈伸": "Band Wrist Curls", "键盘间隙抖手": "Keyboard Shake", "桌面推掌": "Desk Palm Press",
+"腰垫骨盆前后倾": "Cushion Pelvic Tilt", "坐姿转体": "Seated Twist", "坐姿侧弯": "Seated Side Bend", "猫牛式 · 坐姿版": "Seated Cat-Cow",
+"椅背扭转": "Chair-back Twist", "坐姿髋部开合": "Seated Hip Opener", "挺胸收腹": "Chest Up, Core In", "隐形核心收紧": "Invisible Core Brace",
+"站立侧弯": "Standing Side Bend", "靠墙天使": "Wall Angels", "背部伸展": "Back Extension", "臀部收紧": "Glute Squeeze",
+"坐姿抱膝": "Seated Knee Hug", "腰部画圈": "Hip Circles", "久坐脊柱复位": "Spine Reset", "弹力带划船": "Band Row",
+"桌下抖腿燃脂": "Under-desk Leg Bounce", "脚蹬拉力 · 隐形椭圆": "Desk Pedal Pull", "坐姿抬腿": "Seated Leg Raise", "桌下脚踝画圈": "Under-desk Ankle Circles",
+"勾脚绷脚": "Flex & Point", "扶杆站立提踵": "Rail Calf Raise", "坐姿提踵": "Seated Calf Raise", "靠墙静蹲": "Wall Sit",
+"起身深蹲": "Stand-up Squat", "原地踏步": "March in Place", "等电梯提踵": "Elevator Calf Raise", "夹膝内收": "Knee Squeeze",
+"膝盖外展": "Knee Press-out", "单腿平衡": "Single-leg Balance", "站立勾腿": "Standing Hamstring Curl", "坐姿腿伸展": "Seated Leg Extension",
+"小腿拉伸": "Calf Stretch", "弓步拉伸": "Lunge Stretch", "楼梯快走": "Stair Walk", "脚趾抓地": "Toe Grips",
+"交替踮脚": "Alternating Tiptoes", "桌下踩单车": "Under-desk Cycling", "深蹲起立 ×10": "10 Squats", "站立踢腿": "Standing Kicks",
+"眼球转动": "Eye Rolls", "远近对焦": "Near-far Focus", "20-20-20 护眼": "20-20-20 Eye Break", "闭眼放松": "Eyes-closed Rest",
+"眼周按压": "Eye Acupressure", "上下看": "Look Up & Down", "左右看": "Look Left & Right", "眨眼练习": "Blink Drill",
+"会前腹式呼吸": "Pre-meeting Belly Breath", "4-7-8 呼吸": "4-7-8 Breathing", "箱式呼吸": "Box Breathing", "叹气式放松": "Sigh It Out",
+"交替鼻孔呼吸": "Alternate Nostril", "午后提神呼吸": "Afternoon Boost Breath", "下班减压呼吸": "After-work Unwind", "睡前呼吸": "Bedtime Breath",
+"站起来走一走": "Get Up & Walk", "全身伸展": "Full-body Stretch", "开合跳 · 静音版": "Silent Jumping Jacks", "站立转体": "Standing Twist",
+"茶水间伸展": "Pantry Stretch", "午休唤醒操": "Post-lunch Wake-up", "酒店房间微燃": "Hotel Room Burn", "高铁站立伸展": "Train Stretch",
+"会议静音": "Silent meeting",
+"低头下巴找锁骨": "Chin Down to Collarbone", "左右侧颈拉伸": "Side Neck Stretch L/R",
+// ---- gear ----
+"会议场景 · 亲肤硅胶": "Meetings · soft silicone", "桌面脚蹬拉力器": "Under-desk Pedal Trainer", "工位场景 · 桌下隐形": "Desk · hidden under the desk",
+"久坐记忆棉腰垫": "Memory-foam Lumbar Cushion", "工位场景 · 可配合拉伸": "Desk · doubles as stretch prop", "便携筋膜球": "Pocket Massage Ball",
+"通勤场景 · 口袋大小": "Commute · pocket size", "折叠颈枕拉伸带": "Foldable Neck Pillow Strap", "差旅场景 · 两用": "Travel · 2-in-1",
+"轻弹办公弹力带": "FidgetFit Office Band", "工位场景 · 三档阻力": "Desk · 3 resistance levels", "工位微运动套装": "Desk Micro-workout Kit",
+"握力环 + 脚蹬 + 腰垫 + 弹力带": "Grip ring + pedal + cushion + band",
+"握力环 + 脚蹬 + 腰垫 + 弹力带 · 解锁周一到周五专属课程": "Grip ring + pedal + cushion + band · unlocks a Mon–Fri program",
+// ---- squad / badges ----
+"小林": "Lin", "刚完成 手腕旋转": "just did Wrist Spin", "2 分钟前": "2 min ago", "连续打卡 20 天": "20-day streak", "18 分钟前": "18 min ago",
+"阿哲": "Zhe", "会议里静音握了 50 下": "50 silent squeezes in a meeting", "1 小时前": "1 h ago",
+"颈椎守护者": "Neck Guardian", "满电复工": "Fully Charged", "抖腿大师": "Leg-bounce Master", "会议隐身者": "Meeting Ninja", "通勤玩家": "Commute Player", "30 天不重样": "30 Days, No Repeats",
+"肩颈急救": "Neck SOS", "摸鱼专用": "Slacker Mode", "下班前": "Before Clock-out", "腰酸了": "Sore Back", "开会前": "Pre-meeting", "早八续命": "8 AM Survival", "午后犯困": "Afternoon Slump",
+"击掌": "High five", "已击掌": "High-fived",
+// ---- tips ----
+"屏幕顶部和视线齐平，脖子会感谢你。": "Keep the top of your screen at eye level. Your neck will thank you.",
+"每喝一口水，就耸一次肩。": "Every sip of water, one shoulder shrug.",
+"打字 30 分钟，手腕画 10 个圈。": "Every 30 min of typing, 10 wrist circles.",
+"久坐时双脚平放，别翘二郎腿。": "Keep both feet flat. Don't cross your legs.",
+"开会把手机放远一点，起身去拿也算微动。": "Leave your phone out of reach in meetings. Getting up for it counts.",
+"午饭后站 5 分钟，下午不容易犯困。": "Stand 5 min after lunch to dodge the afternoon slump.",
+"嘿！一起动起来": "Hey! Let's move", "抖腿也算数哦": "Bouncing counts", "我先热个身": "Warming up", "颈椎说谢谢你": "Neck says thanks",
+"别光看我呀": "Don't just watch", "再戳我就抽筋了": "Poke = cramp!", "满电复工！": "Fully charged!",
+// ---- home ----
+"颈部唤醒 · 4 个动作": "Neck Wake-up · 4 moves", "分钟": "min", "微动小贴士": "Micro tip", "关闭小贴士": "Close tip", "下一条": "Next",
+"微动一下 满电复工": "MOVE A LITTLE, RECHARGE A LOT", "嗨，": "Hi, ", "通知": "Notifications", "切换跑马灯速度": "Toggle marquee speed",
+"戳一下小人": "Poke the figure", "戳戳我": "Poke me", "下一个微动": "Up next", "会议前 · 14:00": "Pre-mtg · 14:00",
+"开始微动": "Start", "换一个动作": "Swap move", "换一个": "Swap", "收起 ▴": "Less ▴", "看详情 ▾": "Details ▾",
+"今日累计久坐": "Sat today", "最长一次": "Longest", "今天站起次数": "Stand-ups", "我站起来了": "I stood up",
+"小组件 & Apple Watch": "Widgets & Apple Watch", "不打开 App，也能一键开练": "Start a move without opening the app", "点一点 ↓": "Tap ↓",
+"给身体，一个微动的借口。": "Give your body an excuse to move.",
+"今日微动": "Moves today", "活动分钟": "Active min", "连续打卡天": "Day streak", "今日节奏": "Today's rhythm", "每小时微动次数": "Moves per hour",
+"按场景动": "By scene", "全部动作": "All moves", "静音": "Silent", "个动作": "moves", "工位小队": "Desk squad", "3 人正在一起动": "3 moving together now",
+"该动一动了": "Time to move", "本轮已久坐": "Sitting for", "目标 ≤": "Goal ≤",
+"已超过目标，来一组 2 分钟微动吧。": "Over your goal. Time for a 2-minute move.",
+"分钟后提醒你，抖抖腿也算数。": "min until your nudge. Leg bouncing counts.",
+// ---- moves page ----
+"+ 新标签": "+ New tag", "取消收藏": "Unfavorite", "收藏": "Favorite",
+"没有找到这个动作，换个关键词试试。": "No moves found. Try another keyword.",
+"这个列表还是空的，从动作库挑几个加进来吧。": "This list is empty. Pick a few from the library.",
+"从动作库添加到「": "Add from library to “", "搜索结果 ·": "Results ·", "精选": "Picks", "连播这组": "Play all",
+"动作库 · 100 个微动 · 平均 2 分钟": "Library · 100 moves · ~2 min each", "搜索动作": "Search moves",
+"搜索：颈椎、手腕、抖腿…": "Search: neck, wrists, legs…",
+"本周套装 · WEEK SET": "WEEK SET", "5 / 5 已完成": "5 / 5 done", "周一到周五，每天不重样的 5 分钟工位微运动": "A fresh 5-minute desk routine every weekday",
+"完整动作库 · 100 个微动": "Full library · 100 moves", "按部位浏览，挑喜欢的加进你的列表": "Browse by body part, add favorites to your lists",
+"全部": "All", "从「": "From “", "」移除": "” removed", "添加到「": "Add to “", "已添加": "Added", "添加": "Add",
+"个动作 · 点名称可直接开练": "moves · tap a name to start", "动作库": "Move library", "返回": "Back",
+"100 个微动 · 7 个部位": "100 moves · 7 body parts", "搜索动作库": "Search library", "搜索 100 个动作…": "Search 100 moves…", "添加到": "Add to",
+// ---- gear page ----
+"好看且有用的工位装备": "Desk gear that looks good and works", "购物袋": "Bag", "首发价 · 立省 ¥77": "Launch price · save ¥77",
+"牛皮纸开箱 · 解锁 App 周一到周五专属课程": "Kraft unboxing · unlocks a Mon–Fri program in the app", "查看详情": "Details",
+"单品": "Singles", "扫码绑定，动作自动匹配": "Scan to pair, moves match automatically", "查看": "View",
+"移出购物袋": "Remove from bag", "加入购物袋": "Add to bag", "企业 EAP 健康礼盒 · 20 人起订 · ¥199/人": "Corporate wellness box · from 20 people · ¥199 each",
+"已移出购物袋 · 合计": "Removed · total", "已加入": "Added", "· 合计": "· total",
+// ---- me ----
+"格子间玩家 · 加入第 38 天": "Cubicle player · day 38", "玩家等级": "Player level", "还差": "", "XP 升级": "XP to level up",
+"把焦虑变成多巴胺 · 已累计": "Stress → dopamine · total", "次微动": "moves", "本周打卡": "This week", "今天": "Today", "徽章收集": "Badges",
+"添加到主屏幕": "Add to Home Screen", "多端联动功能介绍": "Multi-device features", "微动设置": "Settings",
+"久坐提醒": "Sit reminder", "到点轻震一下，提醒你动一动": "A gentle buzz when it's time to move",
+"会议静音模式": "Meeting silent mode", "跟练时不出声，只看动作": "No sound during sessions, visuals only",
+"节拍震动": "Beat haptics", "用震动代替口令计数": "Count reps with vibration instead of voice", "提醒间隔": "Reminder interval",
+"语言": "Language", "语言 · Language": "Language", "界面显示语言": "App display language",
+// ---- mantra title ----
+"双臂上举，伸个大懒腰": "Arms up, big lazy stretch", "站起来原地踏 10 步": "Stand and march 10 steps", "闭眼深呼吸 3 次": "Eyes closed, 3 deep breaths",
+"肩膀向后绕 5 圈": "5 shoulder rolls back", "看向窗外最远的地方": "Look at the farthest thing outside", "双手握拳再张开 10 次": "Fist and spread 10 times",
+"抖腿、转笔这些小动作，心理学里叫 fidgeting，是身体在自我调节。": "Leg bouncing and pen spinning are called fidgeting — your body self-regulating.",
+"久坐时不自觉的小动作，能让腿部的血液流动起来。": "Small unconscious moves keep blood flowing in your legs while you sit.",
+"这类小动作消耗的能量，被归在「非运动性产热」NEAT 里。": "The energy these moves burn counts as NEAT: non-exercise activity thermogenesis.",
+"走神的时候，手里有点小动作反而更容易专注。": "When your mind wanders, busy hands can actually help you focus.",
+"会议里握握力环，比反复看手机更不打扰别人。": "Squeezing a grip ring in meetings bothers people less than checking your phone.",
+"放下鼠标，手离开键盘": "Let go of the mouse, hands off the keys", "看向 6 米外的地方": "Look 6 m away", "慢慢转转脖子": "Slowly roll your neck", "喝一口水，回来继续": "Take a sip, then come back",
+"+1 微动": "+1 move", "伸个懒腰": "Stretch", "喝口水": "Sip water", "看远处": "Look far", "深呼吸": "Breathe", "动一动": "Move",
+"收起": "Close", "随手挑战": "Quick challenge", "随手挑战 · 10 秒": "Quick challenge · 10 s", "完成 +5 XP": "Done +5 XP", "开始": "Go",
+"冷知识": "Fun fact", "小动作是身体的语言": "Small moves are your body talking", "一分钟小休": "One-minute break", "1 分钟小休": "1-min break",
+"放下鼠标，让眼睛歇一下": "Drop the mouse, rest your eyes", "每 15 秒换一个提示": "New cue every 15 s",
+"三行都点过了，解锁「口号大师」": "All three lines tapped: “Slogan Master” unlocked",
+"跟着倒数做": "Follow the countdown", "完成啦 +5 XP": "Done! +5 XP", "再来一个": "Another", "继续": "Resume", "已暂停": "Paused", "暂停": "Pause",
+"/ 4 步": "/ 4", "休息好了，满电复工！": "Rested. Back to work, fully charged!", "久坐计时已重置": "Sit timer reset", "再来": "Again",
+// ---- promo / watch / widgets ----
+"表盘复杂功能：抬腕就看到本轮久坐": "Complication: raise your wrist to see sitting time",
+"到点手腕轻震：来一组 2 分钟微动？": "A wrist tap on time: 2-minute move?",
+"静音跟练：倒计时 + 实时心率": "Silent session: countdown + live heart rate",
+"完成打卡：满电复工，同步回 iPhone": "Check in: fully charged, synced to iPhone",
+"本轮久坐": "Sitting", "目标": "Goal", "· 到点轻震": "· buzz on time", "1×1 · 常态": "1×1 · default", "点我开练 2 分钟": "Tap for 2 min",
+"1×1 · 超时提醒": "1×1 · overdue", "已久坐": "Sat", "次 ·": "moves ·", "2×1 · 久坐圆环 + 一键开练": "2×1 · sit ring + one-tap start",
+"本周已打卡 5 天": "5 days this week", "大号 · 今日节奏 + 快捷动作": "Large · rhythm + quick moves",
+"轻触提醒": "Nudge", "来一组 2 分钟": "2-min move", "颈部唤醒？": "Neck wake-up?", "颈部唤醒 2/4": "Neck 2/4",
+"DONE · 打卡成功": "DONE · checked in", "已同步到 iPhone": "Synced to iPhone",
+"久坐轻触提醒": "Sit nudges", "到点手腕轻震，会议里也不打扰别人": "A quiet wrist tap — fine even in meetings",
+"抬腕就能跟练": "Train from your wrist", "2 分钟倒计时，表冠滚动选动作": "2-min countdown, scroll the crown to pick moves",
+"实时心率": "Live heart rate", "跟练时显示心率，完成后生成小结": "Heart rate during sessions, summary after",
+"打卡自动同步": "Auto sync", "手表上完成，iPhone 和小组件同步更新": "Finish on the watch, iPhone and widgets update",
+"小组件与 Apple Watch": "Widgets & Apple Watch", "多端联动 · NEW": "MULTI-DEVICE · NEW",
+"不用打开 App。抬腕、看一眼主屏幕，就知道自己坐了多久，一键就能开练。": "No need to open the app. Glance at your wrist or Home Screen to see how long you've sat, and start with one tap.",
+"桌面小组件 · 三种尺寸": "Home Screen widgets · 3 sizes", "大号": "Large",
+"长按主屏幕空白处": "Long-press an empty spot on the Home Screen", "点左上角「+」搜索 FidgetFit": "Tap “+” and search FidgetFit", "选尺寸，放到喜欢的位置": "Pick a size and place it",
+"Apple Watch · 抬腕微动": "Apple Watch · raise to move", "数码表冠：下一屏": "Digital Crown: next screen", "屏": "screen",
+"已连接 · 再看一遍配对": "Connected · replay pairing", "体验连接 Apple Watch": "Try pairing Apple Watch",
+"已预约，上线第一时间通知你": "You're on the list", "预约上线提醒": "Notify me at launch",
+"小组件与 Apple Watch 将随 FidgetFit iOS 版上线。": "Widgets and Apple Watch ship with FidgetFit for iOS.",
+"本页为功能介绍，配对为演示流程。": "This page is a preview; pairing is a demo.",
+"正在寻找附近的 Apple Watch": "Looking for a nearby Apple Watch", "请保持手表解锁，并靠近 iPhone": "Keep your watch unlocked and near your iPhone",
+"找到 1 台手表": "1 watch found", "Momo 的 Apple Watch": "Momo's Apple Watch", "点击连接": "Tap to connect",
+"正在同步你的动作和设置": "Syncing your moves and settings", "工位列表 · 久坐提醒 · 打卡记录": "Desk list · sit reminders · check-ins",
+"已连接 Apple Watch": "Apple Watch connected", "到点时手腕会轻震提醒你动一动": "Your wrist will buzz when it's time to move",
+"演示流程": "Demo", "完成": "Done", "看看手表上的提醒": "See nudge", "关闭": "Close",
+"连接 Apple Watch": "Connect Apple Watch", "连接 APPLE WATCH": "CONNECT APPLE WATCH", "演示": "DEMO",
+"绑定后解锁动作": "Pair to unlock moves", "先试练一次": "Try a move", "已在购物袋": "In bag", "加入购物袋 ·": "Add to bag ·",
+// ---- new tag ----
+"新建标签": "New tag", "建一个自己的动作列表": "Make your own move list",
+"它会和「工位」「通勤」一样出现在动作页，可以从动作库往里加动作，也能一键连播。": "It shows up next to “Desk” and “Commute” on Moves. Add moves from the library and play them in a row.",
+"标签名称": "Tag name", "例如：肩颈急救": "e.g. Neck SOS", "取消": "Cancel", "创建": "Create", "先起个名字": "Give it a name first",
+"已经有这个列表了": "That list already exists", "」，点「添加」放动作进去": "”. Tap “Add” to fill it",
+// ---- session ----
+"进入姿势": "Get set", "站稳，双脚与肩同宽，肩膀放松，深吸一口气。": "Stand steady, feet shoulder-width, shoulders loose, deep breath in.",
+"坐稳，双脚踩地，肩膀放松，深吸一口气。": "Sit steady, feet flat, shoulders loose, deep breath in.",
+"放松回正": "Reset", "慢慢回到起始姿势，抖一抖手和脚，准备复工。": "Ease back to start, shake out your hands and feet, back to work.",
+"微动跟练": "Guided session", "退出微动": "Exit", "语音": "Voice", "上一个动作": "Previous move", "下一个动作": "Next move", "下一个": "Next",
+"跟着呼吸": "Follow your breath", "今天打卡": "Check in today", "完成一组微动就算打卡": "Finish one move to check in", "+10 秒": "+10 s", "已延长 20 秒": "Extended +20 s", "本动作 +10 秒": "+10 s added", "✓ 上一个完成": "✓ Done — next", "最后 3 秒": "Last 3 s", "保持拉伸": "Hold the stretch", "跟着小人做": "Follow the figure", "完成，领取今日徽章": "Finish & claim badge",
+"打卡成功": "Checked in", "打卡成功 · DONE": "CHECKED IN · DONE", "微动一下，满电复工。": "Move a little, recharge a lot.",
+"徽章解锁": "Badge unlocked", "晒到小队": "Share to squad", "回到工位": "Back to desk",
+// ---- toasts ----
+"14:00 会议前，记得来一组颈部唤醒": "Meeting at 14:00 — do a Neck Wake-up first", "今天第": "Stand-up #", "次站起来，干得漂亮": "today. Nice!",
+"戳出腹肌了！": "Poked out some abs!", "解锁隐藏徽章「戳戳乐」": "Hidden badge “Poke Party” unlocked", "换我上场！": "My turn!",
+"好，小贴士先收起来": "OK, tips hidden", "加速！动起来": "Faster! Let's move", "回到常速": "Normal speed",
+"已预约上线提醒": "You'll be notified at launch", "已取消预约": "Notification canceled", "已给": "High-fived", "击掌，一起动起来": "— let's move together",
+"已取消收藏": "Removed from favorites", "已收藏 ·": "Favorited ·", "已从「": "Removed from “", "已添加到「": "Added to “",
+"件 · 合计": "items · total", "已提交咨询，顾问会联系你的 HR": "Request sent. We'll contact your HR.",
+"已打卡 · 久坐计时已重置": "Checked in · sit timer reset", "已晒到工位小队": "Shared to your desk squad",
+"已获得 ·": "Earned ·", "继续微动解锁「": "Keep moving to unlock “", "已开启": "on", "已关闭": "off",
+"每": "Every", "分钟提醒你动一动": "min reminder", "已打卡": "Checked in",
+"已安装，从主屏幕打开就是全屏 App": "Installed. Open it from your Home Screen.", "Safari 里点「分享」→「添加到主屏幕」": "In Safari tap Share → Add to Home Screen",
+"离线可用，像原生 App 一样全屏打开": "Works offline, opens full screen like a native app", "用 Chrome / Edge 打开本页即可安装": "Open in Chrome / Edge to install",
+"已安装": "Installed", "怎么装": "How", "安装": "Install", "已添加到主屏幕": "Added to Home Screen", "随时可以在这里再安装": "You can install from here anytime",
+"点底部「分享」→「添加到主屏幕」": "Tap Share → Add to Home Screen", "在浏览器菜单里选「安装应用」": "Choose “Install app” in the browser menu",
+"已离线，动作和计时照常可用": "Offline — moves and timers still work", "网络已恢复": "Back online", "新版本已就绪，下次打开生效": "Update ready — applies next launch"
+};
+// single characters: exact match only
+var FF_EN_EXACT = { "一": "M", "二": "T", "三": "W", "四": "T", "五": "F", "六": "S", "日": "S", "林": "L", "哲": "Z", "给": "", "周": "W", "月": "M", "第": "", "天": "days", "M": "M" };
+
+(function () {
+  var CJK = /[㐀-鿿　-〿！-～]/;
+  var LS = 'fidgetfit-lang';
+  var lang = 'zh';
+  try { lang = localStorage.getItem(LS) || ((navigator.language || '').toLowerCase().indexOf('zh') === 0 ? 'zh' : 'en'); } catch (e) {}
+  var keys = Object.keys(FF_EN).filter(function (k) { return k.length > 1 && CJK.test(k); }).sort(function (a, b) { return b.length - a.length; });
+  var rx = new RegExp(keys.map(function (k) { return k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }).join('|'), 'g');
+  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  var WK = { '一': 'Mon', '二': 'Tue', '三': 'Wed', '四': 'Thu', '五': 'Fri', '六': 'Sat', '日': 'Sun' };
+  var PATTERNS = [
+    [/^周(.) · (\d+)月(\d+)日$/, function (m, w, mo, d) { return WK[w] + ' · ' + MON[mo - 1] + ' ' + d; }],
+    [/^周(.)\s*(\d+)?$/, function (m, w, d) { return WK[w] + (d ? ' ' + d : ''); }],
+    [/^本周已打卡\s*(\d+)\s*天$/, function (m, n) { return n + (n === '1' ? ' day' : ' days') + ' this week'; }],
+    [/^今天已打卡 · (\d+) 次微动 · 连续 (\d+) 天$/, function (m, a, b) { return 'Checked in today · ' + a + ' moves · ' + b + '-day streak'; }],
+    [/^从「(.+)」移除$/, function (m, n) { return 'Remove from “' + tr(n) + '”'; }],
+    [/^添加到「(.+)」$/, function (m, n) { return 'Add to “' + tr(n) + '”'; }],
+    [/^给\s*(.+?)\s*击掌$/, function (m, n) { return 'High five ' + tr(n); }],
+    [/^第\s*(\d+)\s*屏$/, function (m, n) { return 'Screen ' + n; }],
+    [/^第\s*(\d+)\s*\/\s*(\d+)\s*步$/, function (m, a, b) { return 'Step ' + a + ' / ' + b; }],
+    [/^今天第\s*(\d+)\s*次站起来，干得漂亮$/, function (m, n) { return 'Stand-up #' + n + ' today. Nice!'; }],
+    [/^已给\s*(.+?)\s*击掌，一起动起来$/, function (m, n) { return 'High-fived ' + tr(n) + ' — let\'s move together'; }],
+    [/^每\s*(\d+)\s*分钟提醒你动一动$/, function (m, n) { return 'Reminder every ' + n + ' min'; }],
+    [/^还差\s*(\d+)\s*XP 升级$/, function (m, n) { return n + ' XP to level up'; }],
+    [/^(\d+)\s*分钟后提醒你，抖抖腿也算数。$/, function (m, n) { return 'Nudge in ' + n + ' min. Leg bouncing counts.'; }],
+    [/^(\d+)\s*分钟$/, function (m, n) { return n + ' min'; }],
+    [/^(\d+)\s*天$/, function (m, n) { return n + (n === '1' ? ' day' : ' days'); }],
+    [/^(\d+)\s*个动作$/, function (m, n) { return n + (n === '1' ? ' move' : ' moves'); }],
+    [/^(\d+)\s*屏$/, function (m, n) { return n + ' screens'; }]
+  ];
+  var PUNCT = { '「': '“', '」': '”', '，': ', ', '。': '. ', '：': ': ', '？': '? ', '！': '! ', '、': ', ', '；': '; ', '（': ' (', '）': ') ', '…': '…' };
+  var cache = {};
+  function tr(s) {
+    if (!CJK.test(s)) return s;
+    if (cache[s] !== undefined) return cache[s];
+    var lead = s.match(/^\s*/)[0], tail = s.match(/\s*$/)[0], core = s.trim(), out;
+    if (FF_EN[core] !== undefined) out = FF_EN[core];
+    else if (FF_EN_EXACT[core] !== undefined) out = FF_EN_EXACT[core];
+    else {
+      for (var i = 0; i < PATTERNS.length && out === undefined; i++) { var p = PATTERNS[i]; if (p[0].test(core)) out = core.replace(p[0], p[1]); }
+      if (out === undefined) {
+        out = core.replace(rx, function (k) { return ' ' + FF_EN[k] + ' '; }).replace(/(\d+)\s*天/g, '$1 days').replace(/(\d+)\s*次/g, '$1×')
+          .replace(/[「」，。：？！、；（）]/g, function (c) { return PUNCT[c]; })
+          .replace(/\s+/g, ' ').replace(/\s+([,.:;!?)”])/g, '$1').replace(/([“(])\s+/g, '$1').trim();
+      }
+    }
+    out = lead + out + tail;
+    cache[s] = out; return out;
+  }
+  var ATTRS = ['placeholder', 'aria-label', 'title', 'alt'];
+  var memo = new WeakMap(); // text node -> {zh, en}
+  var amemo = new WeakMap(); // element -> {attr: {zh, en}}
+  var busy = false;
+  function doText(n) {
+    var v = n.nodeValue, r = memo.get(n);
+    if (lang === 'en') {
+      if (r && r.en === v) return;
+      if (!CJK.test(v)) return;
+      var en = tr(v); if (en === v) return;
+      memo.set(n, { zh: v, en: en }); n.nodeValue = en;
+    } else if (r && r.en === v) { n.nodeValue = r.zh; memo.delete(n); }
+  }
+  function doEl(el) {
+    var r = amemo.get(el);
+    for (var i = 0; i < ATTRS.length; i++) {
+      var a = ATTRS[i]; if (!el.hasAttribute(a)) continue;
+      var v = el.getAttribute(a), rr = r && r[a];
+      if (lang === 'en') {
+        if (rr && rr.en === v) continue;
+        if (!CJK.test(v)) continue;
+        var en = tr(v); if (!r) { r = {}; amemo.set(el, r); } r[a] = { zh: v, en: en }; el.setAttribute(a, en);
+      } else if (rr && rr.en === v) { el.setAttribute(a, rr.zh); delete r[a]; }
+    }
+  }
+  function walk(root) {
+    if (!root) return;
+    busy = true;
+    if (root.nodeType === 3) { var pe = root.parentElement; if (!pe || !pe.closest('[data-noi18n],script,style,textarea')) doText(root); busy = false; return; }
+    if (root.nodeType !== 1) { busy = false; return; }
+    if (root.closest && root.closest('[data-noi18n],script,style')) { busy = false; return; }
+    doEl(root);
+    var tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT, {
+      acceptNode: function (n) {
+        if (n.nodeType === 1) return (n.tagName === 'SCRIPT' || n.tagName === 'STYLE' || n.tagName === 'TEXTAREA' || n.hasAttribute('data-noi18n')) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    var n; while ((n = tw.nextNode())) { if (n.nodeType === 3) doText(n); else doEl(n); }
+    busy = false;
+  }
+  var mo = new MutationObserver(function (list) {
+    if (busy) return;
+    list.forEach(function (m) {
+      if (m.type === 'characterData') walk(m.target);
+      else if (m.type === 'attributes') doEl(m.target);
+      else m.addedNodes.forEach(walk);
+    });
+  });
+  function applyDoc() {
+    document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN';
+    document.documentElement.classList.toggle('lang-en', lang === 'en');
+    if (!document.__zhTitle) document.__zhTitle = document.title;
+    document.title = lang === 'en' ? tr(document.__zhTitle) : document.__zhTitle;
+    document.querySelectorAll('[data-lang]').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-lang') === lang); b.setAttribute('aria-pressed', b.getAttribute('data-lang') === lang ? 'true' : 'false'); });
+  }
+  window.ffLang = function () { return lang; };
+  window.ffTr = function (root) { if (lang === 'en') walk(root || document.body); };
+  window.ffEn = function (s) { return tr(s); };
+  window.ffSetLang = function (l) {
+    if (l === lang) return;
+    lang = l; try { localStorage.setItem(LS, l); } catch (e) {}
+    walk(document.body); applyDoc();
+    if (window.ffOnLang) window.ffOnLang(l);
+  };
+  function start() {
+    applyDoc(); walk(document.body);
+    mo.observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ATTRS });
+  }
+  if (document.body) start(); else document.addEventListener('DOMContentLoaded', start);
+})();
+
+</script>
+<script>
 (function () {
   'use strict';
   var C = 829;
@@ -666,13 +1010,104 @@ html.embedded{--sat:0px;--sab:0px;--top:20px}
 
   // ---------- motion figure (original seated stick figure) ----------
   var STAND = { calf: 1, squat: 1, march: 1, side: 1 };
+  // stretches & holds run longer (+10–20s)
+  var EXTRA = { tilt: 10, nod: 10, side: 15, twist: 15, squeeze: 10, reach: 10, ext: 10, pelvic: 10, calf: 10, squat: 15, breathe: 20 };
+  var mmss = function (n) { return Math.floor(n / 60) + ':' + pad(n % 60); };
+  // ---------- stick figure: one pose per move (SMIL keyframes, same line style) ----------
+  var FB = {
+    seat: { v: 's', seat: 1, hd: [84, 32], nk: [82, 50], sh: [80, 62], hp: [72, 104], e1: [92, 86], a1: [110, 84], e2: [88, 88], a2: [106, 88], k1: [108, 106], f1: [106, 146], t1: [118, 148], k2: [102, 110], f2: [98, 146], t2: [110, 148] },
+    stand: { v: 's', seat: 0, hd: [80, 22], nk: [79, 40], sh: [78, 52], hp: [76, 96], e1: [82, 74], a1: [84, 96], e2: [76, 74], a2: [74, 96], k1: [82, 122], f1: [82, 148], t1: [92, 150], k2: [72, 122], f2: [70, 148], t2: [80, 150] },
+    front: { v: 'f', seat: 1, hd: [75, 30], nk: [75, 48], sh: [75, 60], hp: [75, 102], e1: [91, 82], a1: [94, 102], e2: [59, 82], a2: [56, 102], k1: [97, 108], f1: [99, 144], t1: [107, 145], k2: [53, 108], f2: [51, 144], t2: [43, 145] },
+    frontStand: { v: 'f', seat: 0, hd: [75, 22], nk: [75, 40], sh: [75, 52], hp: [75, 96], e1: [86, 74], a1: [90, 96], e2: [64, 74], a2: [60, 96], k1: [84, 122], f1: [86, 148], t1: [94, 150], k2: [66, 122], f2: [64, 148], t2: [56, 150] }
+  };
+  var FIGK = ['hd', 'nk', 'sh', 'hp', 'e1', 'a1', 'e2', 'a2', 'k1', 'f1', 't1', 'k2', 'f2', 't2'];
+  function fShift(o, keys, dx, dy) { var r = {}; keys.forEach(function (k) { r[k] = [o[k][0] + dx, o[k][1] + dy]; }); return r; }
+  function fMirror(o) { var r = {}; Object.keys(o).forEach(function (k) { var v = o[k]; if (Array.isArray(v)) r[k] = [150 - v[0], v[1]]; else if (k === 'eo') r[k] = -v; else r[k] = v; }); return r; }
+  // swap left/right limb keys for mirrored front poses
+  function fSwap(o) { var r = Object.assign({}, o), m = { e1: 'e2', a1: 'a2', e2: 'e1', a2: 'a1', k1: 'k2', f1: 'f2', t1: 't2', k2: 'k1', f2: 'f1', t2: 't1' }; Object.keys(m).forEach(function (k) { if (o[k]) r[m[k]] = o[k]; else delete r[m[k]]; }); return r; }
+  var SIDE_L = { nk: [64, 50], sh: [66, 62], hd: [60, 33], e1: [74, 36], a1: [58, 18], e2: [52, 84], a2: [48, 106] };
+  var TWIST_L = { e1: [84, 72], a1: [60, 66], e2: [52, 74], a2: [76, 66], eo: -6, rx: 12 };
+  var POSES = {
+    tilt: { b: 'front', dur: 4, f: [{}, { hd: [67, 32] }, {}, { hd: [83, 32] }, {}] },
+    nod: { b: 'seat', dur: 3, t: [0, .35, .6, .85, 1], f: [{}, { hd: [94, 37] }, { hd: [94, 37] }, {}, {}] },
+    turn: { b: 'front', dur: 3.4, f: [{}, { rx: 11, eo: -6 }, {}, { rx: 11, eo: 6 }, {}] },
+    shrug: { b: 'front', dur: 2, t: [0, .35, .55, .8, 1], base: { e1: [90, 84], a1: [92, 104], e2: [60, 84], a2: [58, 104] },
+      f: [{}, { sh: [75, 51], e1: [90, 75], a1: [92, 95], e2: [60, 75], a2: [58, 95] }, { sh: [75, 51], e1: [90, 75], a1: [92, 95], e2: [60, 75], a2: [58, 95] }, {}, {}] },
+    roll: { b: 'front', dur: 2.4, ease: 'lin', base: { a1: [84, 58], a2: [66, 58], e1: [98, 70], e2: [52, 70] },
+      f: [{}, { e1: [94, 52], e2: [56, 52] }, { e1: [88, 60], e2: [62, 60] }, { e1: [94, 80], e2: [56, 80] }, {}] },
+    squeeze: { b: 'seat', dur: 2.6, t: [0, .35, .65, 1], base: { e1: [100, 74], a1: [104, 52], e2: [96, 76], a2: [100, 54] },
+      f: [{}, { e1: [58, 76], a1: [64, 54], e2: [56, 78], a2: [62, 56] }, { e1: [58, 76], a1: [64, 54], e2: [56, 78], a2: [62, 56] }, {}] },
+    reach: { b: 'frontStand', dur: 3, t: [0, .4, .65, 1], f: [{}, { e1: [86, 32], a1: [92, 8], e2: [64, 32], a2: [58, 8] }, { e1: [86, 32], a1: [92, 8], e2: [64, 32], a2: [58, 8] }, {}] },
+    wrist: { b: 'seat', dur: 1.2, ease: 'lin', base: { e1: [98, 72], a1: [116, 72], h1: [124, 72], e2: [94, 76], a2: [112, 76], h2: [120, 76] },
+      f: [{}, { h1: [122, 65], h2: [118, 69] }, {}, { h1: [122, 79], h2: [118, 83] }, {}] },
+    grip: { b: 'seat', dur: 1.4, base: { e1: [96, 80], a1: [112, 72], e2: [92, 84], a2: [108, 78], fr: 3.5, fo: 1 }, f: [{}, { fr: 7, fo: 0 }, {}] },
+    bounce: { b: 'seat', dur: .8, ease: 'lin', f: [{}, { k1: [108, 101], f1: [108, 141], t1: [118, 148] }, {}, { k2: [102, 105], f2: [100, 141], t2: [110, 148] }, {}] },
+    ext: { b: 'seat', dur: 3, t: [0, .3, .7, 1], f: [{}, { f1: [146, 101], t1: [147, 89] }, { f1: [146, 101], t1: [147, 89] }, {}] },
+    ankle: { b: 'seat', dur: 1.6, f: [{}, { t1: [115, 135] }, {}, { f1: [107, 142], t1: [117, 152] }, {}] },
+    calf: { b: 'stand', dur: 1.8, t: [0, .4, .6, 1], up: 1 },
+    squat: { b: 'stand', dur: 2.8, t: [0, .4, .6, 1],
+      f: [{}, { hd: [88, 49], nk: [82, 66], sh: [80, 76], hp: [62, 118], e1: [102, 78], a1: [124, 78], e2: [100, 82], a2: [122, 82], k1: [88, 120], f1: [82, 148], t1: [92, 150], k2: [84, 124], f2: [74, 148], t2: [84, 150] }] },
+    march: { b: 'stand', dur: 1.4, f: [{}, { k1: [98, 100], f1: [98, 126], t1: [108, 126], e1: [70, 72], a1: [64, 90], e2: [90, 70], a2: [100, 82] }, {}, { k2: [92, 100], f2: [92, 126], t2: [102, 126], e1: [90, 70], a1: [100, 82], e2: [70, 74], a2: [64, 92] }, {}] },
+    side: { b: 'front', dur: 4.4, t: [0, .2, .45, .7, .95, 1], f: [{}, SIDE_L, {}, fSwap(fMirror(SIDE_L)), {}, {}] },
+    twist: { b: 'front', dur: 4, base: { e1: [92, 72], a1: [66, 64], e2: [58, 72], a2: [84, 64] }, f: [{}, TWIST_L, {}, fSwap(fMirror(TWIST_L)), {}] },
+    pelvic: { b: 'seat', dur: 3, f: [{}, { sh: [74, 62], nk: [75, 50], hd: [76, 32], hp: [70, 105] }, {}, { sh: [86, 61], nk: [88, 49], hd: [91, 32] }, {}] },
+    breathe: { b: 'front', dur: 5, t: [0, .33, .5, 1], base: { e1: [90, 82], a1: [81, 90], e2: [60, 82], a2: [69, 90], br: 2 },
+      f: [{}, { br: 11, sh: [75, 58], nk: [75, 46], hd: [75, 28] }, { br: 11, sh: [75, 58], nk: [75, 46], hd: [75, 28] }, {}] },
+    eye: { b: 'front', dur: 3.6, base: { er: 2.4 }, f: [{}, { eo: -4 }, { eoy: -3 }, { eo: 4 }, { eoy: 3 }, { es: .2 }, {}] }
+  };
+  POSES.orig = POSES.tilt;
+  // front seated poses were drawn at standing height: drop the whole set 6px so the hips sit on the seat
+  (function () {
+    function dn(o) { var r = {}; Object.keys(o).forEach(function (k) { r[k] = Array.isArray(o[k]) ? [o[k][0], o[k][1] + 6] : o[k]; }); return r; }
+    FB.front = dn(FB.front);
+    Object.keys(POSES).forEach(function (n) { var p = POSES[n]; if (p.b !== 'front' || p.__dn) return; p.__dn = 1; if (p.base) p.base = dn(p.base); p.f = p.f.map(dn); });
+  })();
+  (function () { // calf raise: everything above the toes lifts, heels come up
+    var p = POSES.calf, up = fShift(FB.stand, ['hd', 'nk', 'sh', 'hp', 'e1', 'a1', 'e2', 'a2', 'k1', 'k2'], 0, -9);
+    up.f1 = [86, 139]; up.f2 = [74, 139]; p.f = [{}, up, up, {}];
+  })();
+  var REDUCED = false; try { REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
   function fig(anim, size, color, sw, noChair) {
     color = color || '#4CB5AE'; sw = sw || 4;
-    var chair = noChair ? '' : '<path d="M44 108h52" stroke="#2F2F2F"/><path d="M50 108v44M90 108v44" stroke="#2F2F2F"/>';
-    return '<svg class="of of-' + anim + '" width="' + size + '" height="' + Math.round(size * 170 / 150) + '" viewBox="0 0 150 170" fill="none" stroke="' + color + '" stroke-width="' + sw + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + chair +
-      '<g class="all"><g class="ub"><g class="h"><circle cx="82" cy="34" r="15"/></g><path d="M80 54 L72 104"/>' +
-      '<g class="ar"><path d="M77 70 L46 58"/><path d="M77 72 L106 88"/></g></g>' +
-      '<path d="M72 104 L54 150"/><g class="kk"><path d="M72 104 L104 120 L102 150"/></g></g></svg>';
+    var P = POSES[anim] || POSES.tilt, base = Object.assign({ rx: 14, eo: 0, eoy: 0, er: 1.9, es: 1 }, FB[P.b], P.base || {});
+    var frames = P.f.map(function (o) { return Object.assign({}, base, o); });
+    var still = size < 60 || REDUCED, peak = frames[Math.min(1, frames.length - 1)];
+    var n = frames.length, kt = P.t || frames.map(function (_, i) { return +(i / (n - 1)).toFixed(3); });
+    var spl = []; for (var i = 1; i < n; i++) spl.push(P.ease === 'lin' ? '0 0 1 1' : '0.45 0 0.55 1');
+    function anim2(attr, vals) {
+      if (still || vals.every(function (v) { return v === vals[0]; })) return '';
+      return '<animate attributeName="' + attr + '" dur="' + P.dur + 's" repeatCount="indefinite" values="' + vals.join(';') + '" keyTimes="' + kt.join(';') + '" calcMode="spline" keySplines="' + spl.join(';') + '"/>';
+    }
+    function el(tag, attrs, fn) { // attrs: name -> function(frame) -> value
+      var a = '', kids = '';
+      Object.keys(attrs).forEach(function (k) {
+        var vals = frames.map(attrs[k]);
+        a += ' ' + k + '="' + (still ? attrs[k](peak) : vals[0]) + '"';
+        kids += anim2(k, vals);
+      });
+      return '<' + tag + a + (fn || '') + (kids ? '>' + kids + '</' + tag + '>' : '/>');
+    }
+    var pt = function (p) { return p[0] + ' ' + p[1]; };
+    var line = function (keys) { return function (f) { return 'M' + keys.filter(function (k) { return f[k]; }).map(function (k) { return pt(f[k]); }).join(' L'); }; };
+    var faint = color === '#FFFFFF' || color === '#fff' ? 'rgba(255,255,255,.22)' : '#2F2F2F';
+    var side = base.v === 's', far = side ? ' opacity=".5"' : '';
+    var prop = base.seat
+      ? (side ? '<path d="M46 112 H100 M50 112 V64 M54 112 V151 M94 112 V151" stroke="' + faint + '"/>'
+              : '<path d="M42 114 H108 M50 114 V151 M100 114 V151 M50 114 V70 M100 114 V70" stroke="' + faint + '"/>')
+      : '<path d="M40 152 H116" stroke="' + faint + '"/>';
+    var out = '<svg class="fig2 fig-' + anim + '" width="' + size + '" height="' + Math.round(size * 170 / 150) + '" viewBox="0 0 150 170" fill="none" stroke="' + color + '" stroke-width="' + sw + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + prop;
+    out += el('path', { d: line(['hp', 'k2', 'f2', 't2']) }, far) + el('path', { d: line(['sh', 'e2', 'a2', 'h2']) }, far);
+    out += el('path', { d: line(['nk', 'hp']) }) + el('path', { d: line(['hp', 'k1', 'f1', 't1']) }) + el('path', { d: line(['sh', 'e1', 'a1', 'h1']) });
+    out += el('ellipse', { cx: function (f) { return f.hd[0]; }, cy: function (f) { return f.hd[1]; }, rx: function (f) { return f.rx; }, ry: function () { return 14; } });
+    var eyeAttrs = function (dx) { return { cx: function (f) { return f.hd[0] + dx + f.eo; }, cy: function (f) { return f.hd[1] - 1 + f.eoy; }, rx: function (f) { return f.er; }, ry: function (f) { return +(f.er * f.es).toFixed(2); } }; };
+    var fillEye = ' fill="' + color + '" stroke="none"';
+    if (side) out += el('ellipse', { cx: function (f) { return f.hd[0] + 7; }, cy: function (f) { return f.hd[1] - 2; }, rx: function () { return 1.7; }, ry: function () { return 1.7; } }, fillEye);
+    else out += el('ellipse', eyeAttrs(-5), fillEye) + el('ellipse', eyeAttrs(5), fillEye);
+    if (base.fr) ['a1', 'a2'].forEach(function (k, i) {
+      out += el('circle', { cx: function (f) { return f[k][0]; }, cy: function (f) { return f[k][1]; }, r: function (f) { return f.fr; }, 'fill-opacity': function (f) { return f.fo; } }, ' fill="' + color + '" stroke-width="' + (sw * .6) + '"' + (i ? far : ''));
+    });
+    if (base.br) out += el('circle', { cx: function () { return 75; }, cy: function (f) { return Math.round((f.sh[1] + f.hp[1]) / 2) + 4; }, r: function (f) { return f.br; } }, ' stroke-width="' + (sw * .6) + '" opacity=".6"');
+    return out + '</svg>';
   }
   var CUE = {
     tilt: '耳朵慢慢靠近肩膀，另一侧颈部有拉伸感，左右交替。', nod: '下巴向锁骨方向收，后颈拉长，再慢慢抬回正中。',
@@ -722,6 +1157,7 @@ html.embedded{--sat:0px;--sab:0px;--top:20px}
   var BY_ID = {}, BY_NAME = {};
   LIB.forEach(function (m) { BY_ID[m.id] = m; BY_NAME[m.name] = m; });
   function scLabel(m) { return m.sc.split('').map(function (k) { return SCN[k]; }).join(' · '); }
+  function hit(m, q) { var t = m.name + ' ' + tagsText(m); return t.indexOf(q) >= 0 || ffEn(m.name).toLowerCase().indexOf(q.toLowerCase()) >= 0 || ffEn(tagsText(m)).toLowerCase().indexOf(q.toLowerCase()) >= 0; }
   function tagsText(m) { return m.part + ' · ' + scLabel(m); }
 
   // the original four scene lists, as before
@@ -768,7 +1204,7 @@ html.embedded{--sat:0px;--sab:0px;--top:20px}
   var S = {
     tab: 'home', scene: 'desk', query: '',
     session: null, done: false, sheet: null,
-    sitSec: 47 * 60 + 12, micro: 6, minutes: 14, streak: 12, xp: 880, level: 7, total: 214,
+    sitSec: 47 * 60 + 12, log: null, mlog: {}, xp: 880, level: 7, total: 214,
     hourly: [1, 1, 2, 0, 1, 1, 0, 0, 0],
     nextIdx: 0, pokes: 0, mantra: null, mTried: {}, chIdx: 0, factIdx: 0, insight: false, standCount: 3, tipIdx: 0, tipHidden: false, fast: false,
     bag: 2, added: { ring: true, kit: true },
@@ -783,10 +1219,22 @@ html.embedded{--sat:0px;--sab:0px;--top:20px}
   var KEY = 'fidgetfit-lists-v1';
   try {
     var saved = JSON.parse(localStorage.getItem(KEY) || 'null');
-    if (saved) ['favs', 'tags', 'lists'].forEach(function (k) { if (saved[k]) S[k] = saved[k]; });
+    if (saved) ['favs', 'tags', 'lists', 'log', 'mlog'].forEach(function (k) { if (saved[k]) S[k] = saved[k]; });
   } catch (e) {}
-  function save() { try { localStorage.setItem(KEY, JSON.stringify({ favs: S.favs, tags: S.tags, lists: S.lists })); } catch (e) {} }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify({ favs: S.favs, tags: S.tags, lists: S.lists, log: S.log, mlog: S.mlog })); } catch (e) {} }
 
+  // ---------- daily check-in log: { 'YYYY-MM-DD': moves } ----------
+  function dkey(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+  function dayOff(n) { var d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() + n); return d; }
+  if (!S.log) { // first launch: sample history for the past 11 days so the demo has a streak; today starts at 0
+    S.log = {}; for (var di = 1; di <= 11; di++) S.log[dkey(dayOff(-di))] = 3 + (di * 7) % 5;
+    try { localStorage.setItem(KEY, JSON.stringify({ favs: S.favs, tags: S.tags, lists: S.lists, log: S.log, mlog: S.mlog })); } catch (e) {}
+  }
+  function streakDays() { var n = 0, i = S.log[dkey(dayOff(0))] ? 0 : -1; while (S.log[dkey(dayOff(i))]) { n++; i--; } return n; }
+  function weekDays() { var t = dayOff(0), wd = (t.getDay() + 6) % 7, out = []; for (var i = 0; i < 7; i++) out.push(dayOff(i - wd)); return out; }
+  Object.defineProperty(S, 'micro', { get: function () { return S.log[dkey(dayOff(0))] || 0; }, set: function (v) { S.log[dkey(dayOff(0))] = v; save(); } });
+  Object.defineProperty(S, 'streak', { get: streakDays });
+  Object.defineProperty(S, 'minutes', { get: function () { return S.mlog[dkey(dayOff(0))] || 0; }, set: function (v) { S.mlog[dkey(dayOff(0))] = v; save(); } });
   var $ = function (id) { return document.getElementById(id); };
   var pad = function (n) { return String(n).padStart(2, '0'); };
   var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
@@ -842,10 +1290,10 @@ html.embedded{--sat:0px;--sab:0px;--top:20px}
     var nm = nextMove(), ni = nextInfo(nm);
     return '<div class="page home">' +
       '<header class="topbar px"><div class="greet"><small>' + todayLabel() + '</small><b>嗨，' + NICK + '</b></div>' +
-      '<div style="display:flex;align-items:center;gap:10px"><span class="live"><i class="blink"></i>LIVE</span><button class="round press" data-act="bell" aria-label="通知">' + I.bell + '<span class="badge-dot"></span></button></div></header>' +
+      '<div style="display:flex;align-items:center;gap:8px">' + '<button class="langpill press" data-act="lang" data-noi18n aria-label="中文 / English"><span data-lang="zh"' + (ffLang() === 'zh' ? ' class="on"' : '') + '>中</span><span data-lang="en"' + (ffLang() === 'en' ? ' class="on"' : '') + '>EN</span></button>' + '<span class="live"><i class="blink"></i>LIVE</span><button class="round press" data-act="bell" aria-label="通知">' + I.bell + '<span class="badge-dot"></span></button></div></header>' +
       '<button class="marquee' + (S.fast ? ' fast' : '') + '" id="marq" data-act="marq" aria-label="切换跑马灯速度" style="width:calc(100% + 20px)"><div>' + marq + marq + '</div></button>' +
       '<section class="card next px" id="nextCard">' +
-      '<button class="figbtn" data-act="poke" aria-label="戳一下小人"><span class="figwrap" id="heroFig">' + fig(ni.anim, 104, '#4CB5AE', 4) + '</span>' +
+      '<button class="figbtn" data-act="poke" aria-label="戳一下小人"><span class="figwrap" id="heroFig">' + fig(ni.anim, 92, '#4CB5AE', 4) + '</span>' +
       (S.pokes ? '' : '<span class="bubble hint" id="figBubble">戳戳我</span>') + '</button>' +
       '<div class="tagrow2"><em>下一个微动</em><span>会议前 · 14:00</span></div>' +
       '<div class="nm-main"><div class="d" style="font-size:76px;line-height:.9" id="nextTime">' + ni.time + '</div>' +
@@ -904,7 +1352,7 @@ html.embedded{--sat:0px;--sab:0px;--top:20px}
   // ---------- MOVES (same layout as before) ----------
   function current() {
     var q = S.query.trim();
-    if (q) return LIB.filter(function (m) { return (m.name + tagsText(m)).indexOf(q) >= 0; });
+    if (q) return LIB.filter(function (m) { return hit(m, q); });
     return listOf(S.scene);
   }
   function chipsHtml() {
@@ -958,7 +1406,7 @@ html.embedded{--sat:0px;--sab:0px;--top:20px}
     var q = S.lib.q.trim(), p = S.lib.part;
     return LIB.filter(function (m) {
       if (p !== 'all' && m.part !== p) return false;
-      return !q || (m.name + tagsText(m)).indexOf(q) >= 0;
+      return !q || hit(m, q);
     });
   }
   function libPartsHtml() {
@@ -1051,17 +1499,19 @@ html.embedded{--sat:0px;--sab:0px;--top:20px}
       '<section class="level"><div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;letter-spacing:1px"><span>玩家等级</span><span>还差 ' + (1000 - S.xp) + ' XP 升级</span></div>' +
       '<div class="big">Level ' + pad(S.level) + '</div><div class="track"><i style="width:' + (S.xp / 10) + '%"></i></div><div style="font-size:14px;font-weight:700">把焦虑变成多巴胺 · 已累计 ' + S.total + ' 次微动</div></section>' +
       '<section style="display:flex;flex-direction:column;gap:12px"><div class="h2row"><h2 class="h2">本周打卡</h2><span class="d" style="font-size:18px;color:#FF8A5C">' + S.streak + ' DAY STREAK</span></div><div class="days7">' +
-      days.map(function (d, i) {
-        if (i < 5) return '<div><span class="c done" style="animation-delay:' + (i * 0.06) + 's">' + I.check + '</span>' + d + '</div>';
-        if (i === 5) return '<div><span class="c today">' + S.micro + '</span><span class="now">今天</span></div>';
-        return '<div><span class="c future"></span>' + d + '</div>';
+      weekDays().map(function (dt, i) {
+        var k = dkey(dt), today = k === dkey(dayOff(0)), n = S.log[k] || 0, d = days[i];
+        if (today) return '<div><button class="c today press' + (n ? ' got' : '') + '" data-act="checkin" aria-label="今天打卡">' + (n ? I.check : '+') + '</button><span class="now">今天</span></div>';
+        if (dt > dayOff(0)) return '<div><span class="c future"></span>' + d + '</div>';
+        if (n) return '<div><span class="c done" style="animation-delay:' + (i * 0.06) + 's">' + I.check + '</span>' + d + '</div>';
+        return '<div><span class="c miss"></span>' + d + '</div>';
       }).join('') + '</div></section>' +
       '<section style="display:flex;flex-direction:column;gap:12px"><div class="h2row"><h2 class="h2">徽章收集</h2><span style="font-size:13px;color:#9A9A9A">' + bcount + ' / 24</span></div><div class="grid3">' +
       BADGES.map(function (b, i) {
         var on = !!S.badges[b.id];
         return '<button class="bdg press ' + (on ? 'on' : 'off') + '" style="animation-delay:' + (i * 0.05) + 's" data-act="badge" data-arg="' + b.id + '">' + (on ? BADGE_ICON[b.id] : I.lock) + b.name + '</button>';
       }).join('') + '</div></section>' +
-      '<section style="display:flex;flex-direction:column;gap:10px"><h2 class="h2">App</h2><div class="setbox"><div class="set" style="border-bottom:none"><div><b>添加到主屏幕</b><span id="installSub">' + installSub() + '</span></div>' + installBtn() + '</div><div class="set" style="border-bottom:none;border-top:1px solid #1E1E1E"><div><b>小组件 & Apple Watch</b><span>多端联动功能介绍</span></div><button class="installbtn press" style="background:#fff" data-act="openPromo">查看</button></div></div></section>' +
+      '<section style="display:flex;flex-direction:column;gap:10px"><h2 class="h2">App</h2><div class="setbox"><div class="set" style="border-bottom:none"><div><b>语言 · Language</b><span>界面显示语言</span></div>' + '<button class="langpill press" data-act="lang" data-noi18n aria-label="中文 / English"><span data-lang="zh"' + (ffLang() === 'zh' ? ' class="on"' : '') + '>中</span><span data-lang="en"' + (ffLang() === 'en' ? ' class="on"' : '') + '>EN</span></button>' + '</div><div style="border-top:1px solid #1E1E1E"></div><div class="set" style="border-bottom:none"><div><b>添加到主屏幕</b><span id="installSub">' + installSub() + '</span></div>' + installBtn() + '</div><div class="set" style="border-bottom:none;border-top:1px solid #1E1E1E"><div><b>小组件 & Apple Watch</b><span>多端联动功能介绍</span></div><button class="installbtn press" style="background:#fff" data-act="openPromo">查看</button></div></div></section>' +
       '<section style="display:flex;flex-direction:column;gap:10px"><h2 class="h2">微动设置</h2><div class="setbox">' +
       switchHtml('remind', '久坐提醒', '到点轻震一下，提醒你动一动') + switchHtml('silent', '会议静音模式', '跟练时不出声，只看动作') + switchHtml('vibe', '节拍震动', '用震动代替口令计数') +
       '<div style="display:flex;flex-direction:column;gap:10px;padding:14px 18px 16px"><b style="font-size:15px">提醒间隔</b><div class="ivals" id="ivals">' + ivalsHtml() + '</div></div></div></section></div>';
@@ -1104,7 +1554,7 @@ html.embedded{--sat:0px;--sab:0px;--top:20px}
       '<div class="r"><span id="mMeta">每 15 秒换一个提示</span><button class="b press" id="mBreakBtn" data-act="mBreak">开始</button></div></div>';
   }
   function placeTip(line, k) {
-    var hero = $('hero'), tip = $('mPop').firstElementChild; if (!hero || !tip) return;
+    var hero = $('hero'), tip = $('mPop').firstElementChild; if (!hero || !tip) return; ffTr(tip);
     var hw = hero.clientWidth, tw = tip.offsetWidth;
     var top = line.offsetTop + line.offsetHeight * 0.62;
     var left = k === 'take' ? line.offsetLeft + line.offsetWidth * 0.3 : k === 'fidget' ? line.offsetLeft - 8 : line.offsetLeft + line.offsetWidth - tw;
@@ -1202,7 +1652,7 @@ html.embedded{--sat:0px;--sab:0px;--top:20px}
       '<div style="grid-column:span 2"><div class="wgt big' + dim('l') + '"><span style="display:flex;justify-content:space-between;align-items:flex-start"><span class="d" style="font-size:24px;line-height:.92;text-transform:uppercase">Take a<br><span style="color:#4CB5AE">Fidget Break.</span></span><span style="text-align:right"><span class="d" style="font-size:24px;line-height:1"><span class="pwSit">' + sitMin() + '</span>\'</span><br><span style="font-size:9px;color:#9A9A9A">本轮久坐</span></span></span>' +
         '<span class="wbars">' + bars + '</span>' +
         quick.map(function (m, i) { return '<span class="wqm"><b>0' + (i + 1) + '</b><span>' + m.name + '</span><button class="press" data-act="start" data-arg="' + m.id + '" aria-label="开始 ' + m.name + '">' + I.playS + '</button></span>'; }).join('') +
-        '<span style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#9A9A9A"><span>本周已打卡 5 天</span><span class="d" style="font-size:14px;color:#FF8A5C">' + S.micro + ' TODAY</span></span></div><p class="wcap">大号 · 今日节奏 + 快捷动作</p></div>' +
+        '<span style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#9A9A9A"><span>本周已打卡 ' + weekDays().filter(function (d) { return S.log[dkey(d)]; }).length + ' 天</span><span class="d" style="font-size:14px;color:#FF8A5C">' + S.micro + ' TODAY</span></span></div><p class="wcap">大号 · 今日节奏 + 快捷动作</p></div>' +
       '</div></div>';
   }
   function watchScreenHtml(i) {
@@ -1316,17 +1766,17 @@ html.embedded{--sat:0px;--sab:0px;--top:20px}
 
   // ---------- session ----------
   function stepsFor(m) {
-    if (m.name === '颈部唤醒') return NECK_STEPS.map(function (s) { return { name: s.name, anim: s.anim, cue: CUE[s.anim], dur: 20 }; });
+    if (m.name === '颈部唤醒') return NECK_STEPS.map(function (s) { return { name: s.name, anim: s.anim, cue: CUE[s.anim], dur: 20 + (EXTRA[s.anim] || 0), hold: !!EXTRA[s.anim] }; });
     var stand = !!STAND[m.anim];
     return [
       { name: '进入姿势', anim: 'breathe', cue: stand ? '站稳，双脚与肩同宽，肩膀放松，深吸一口气。' : '坐稳，双脚踩地，肩膀放松，深吸一口气。', dur: 8 },
-      { name: m.name, anim: m.anim, cue: CUE[m.anim], dur: 24 },
+      { name: m.name, anim: m.anim, cue: CUE[m.anim], dur: 24 + (EXTRA[m.anim] || 0), hold: !!EXTRA[m.anim] },
       { name: '放松回正', anim: 'breathe', cue: '慢慢回到起始姿势，抖一抖手和脚，准备复工。', dur: 8 }
     ];
   }
   function run(title, steps, min) {
     S.sheet = null;
-    S.session = { title: title, steps: steps, min: min, idx: 0, remain: steps[0].dur, paused: false };
+    S.session = { title: title, steps: steps.map(function (x) { return Object.assign({ base: x.dur }, x); }), min: min, idx: 0, remain: steps[0].dur, paused: false, ext: 0, buzzUntil: 0 };
     S.done = false;
     var segs = steps.map(function () { return '<div><i></i></div>'; }).join('');
     overlay.innerHTML = '<div class="ov session" id="ses" role="dialog" aria-label="微动跟练">' +
@@ -1335,22 +1785,25 @@ html.embedded{--sat:0px;--sab:0px;--top:20px}
       '<div class="stagebox"><div class="dial"><span class="glow" aria-hidden="true"></span>' +
       '<svg class="r" viewBox="0 0 290 290" aria-hidden="true"><circle cx="145" cy="145" r="132" fill="none" stroke="#1C1C1C" stroke-width="10"/><circle id="sesRing" cx="145" cy="145" r="132" fill="none" stroke="#FF8A5C" stroke-width="10" stroke-linecap="round" stroke-dasharray="829" stroke-dashoffset="829" transform="rotate(-90 145 145)" style="transition:stroke-dashoffset 1s linear"/></svg>' +
       '<div class="c"><span id="sesFig"></span><span class="t" id="sesTime"></span><span class="s" id="sesStatus"></span></div></div>' +
-      '<div class="mv" id="sesMv"><h2 id="sesName"></h2><p id="sesCue"></p></div></div>' +
+      '<div class="mv" id="sesMv"><h2 id="sesName"></h2><p id="sesCue"></p><button class="addt press" id="sesAdd" data-act="addTime"></button></div></div>' +
       '<div class="ctrls"><button class="sm press" data-act="prev" aria-label="上一个动作">' + I.prev + '</button><button class="lg press" id="sesPlay" data-act="toggle" aria-label="暂停"></button><button class="sm press" data-act="next" aria-label="下一个动作">' + I.next + '</button></div>' +
       '<div class="upnext"><small>下一个</small><b id="sesNext"></b><span id="sesNextDur"></span></div></div>';
     updateSession(true);
   }
   function start(m) { run(m.name, stepsFor(m), m.min); }
   function startList(name, list) {
-    run(name, list.map(function (m) { return { name: m.name, anim: m.anim, cue: CUE[m.anim], dur: 20 }; }), list.reduce(function (a, m) { return a + m.min; }, 0));
+    run(name, list.map(function (m) { return { name: m.name, anim: m.anim, cue: CUE[m.anim], dur: 20 + (EXTRA[m.anim] || 0), hold: !!EXTRA[m.anim] }; }), list.reduce(function (a, m) { return a + m.min; }, 0));
   }
   function updateSession(stepChanged) {
     var s = S.session; if (!s || !$('ses')) return;
     var st = s.steps[s.idx], nx = s.steps[s.idx + 1];
     $('sesTtl').textContent = s.title + ' · ' + (s.idx + 1) + ' / ' + s.steps.length;
-    $('sesTime').textContent = '0:' + pad(s.remain);
+    $('sesTime').textContent = mmss(s.remain);
     $('sesRing').setAttribute('stroke-dashoffset', Math.round(C * (1 - s.remain / st.dur)));
-    $('sesStatus').textContent = s.paused ? '已暂停' : (st.anim === 'breathe' ? '跟着呼吸' : '跟着小人做');
+    var stEl = $('sesStatus'), buzzing = Date.now() < s.buzzUntil;
+    stEl.classList.toggle('ok', buzzing);
+    stEl.textContent = s.paused ? '已暂停' : buzzing ? '✓ 上一个完成' : s.remain <= 3 ? '最后 3 秒' : (st.anim === 'breathe' ? '跟着呼吸' : st.hold ? '保持拉伸' : '跟着小人做');
+    var ad = $('sesAdd'); ad.disabled = s.ext >= 2; ad.textContent = s.ext >= 2 ? '已延长 20 秒' : '+10 秒';
     $('ses').classList.toggle('paused', s.paused);
     $('sesPlay').innerHTML = s.paused ? I.play : I.pause;
     $('sesPlay').setAttribute('aria-label', s.paused ? '继续' : '暂停');
@@ -1362,15 +1815,25 @@ html.embedded{--sat:0px;--sab:0px;--top:20px}
       var f = $('sesFig'); f.innerHTML = fig(st.anim, 100, '#FFFFFF', 5, true); f.style.animation = 'none'; void f.offsetWidth; f.style.animation = '';
       $('sesName').textContent = st.name; $('sesCue').textContent = st.cue;
       $('sesNext').textContent = nx ? nx.name : '完成，领取今日徽章';
-      $('sesNextDur').textContent = nx ? '0:' + pad(nx.dur) : '';
+      $('sesNextDur').textContent = nx ? mmss(nx.dur) : '';
       var mv = $('sesMv'); mv.classList.remove('swap'); void mv.offsetWidth; mv.classList.add('swap');
       if (S.vibe && navigator.vibrate) { try { navigator.vibrate(30); } catch (e) {} }
     }
+    var sv = $('sesFig') && $('sesFig').querySelector('svg');
+    if (sv && sv.pauseAnimations) { if (s.paused) sv.pauseAnimations(); else sv.unpauseAnimations(); }
   }
   function nextStep() {
     var s = S.session; if (!s) return;
     if (s.idx >= s.steps.length - 1) { finish(); return; }
-    s.idx++; s.remain = s.steps[s.idx].dur; updateSession(true);
+    s.idx++; s.ext = 0; s.steps[s.idx].dur = s.steps[s.idx].base; s.remain = s.steps[s.idx].dur;
+    buzz(); updateSession(true);
+  }
+  // haptic + visual nudge when a move ends
+  function buzz() {
+    var s = S.session; if (!s) return;
+    s.buzzUntil = Date.now() + 1600;
+    if (navigator.vibrate) { try { navigator.vibrate([70, 50, 70]); } catch (e) {} }
+    var d = document.querySelector('#ses .dial'); if (d) replay(d, 'buzz');
   }
   function finish() {
     var s = S.session;
@@ -1394,7 +1857,9 @@ html.embedded{--sat:0px;--sab:0px;--top:20px}
 
   // ---------- actions ----------
   var A = {
+    lang: function () { ffSetLang(ffLang() === 'en' ? 'zh' : 'en'); },
     tab: function (a) { go(a); },
+    checkin: function () { if (S.micro) toast('今天已打卡 · ' + S.micro + ' 次微动 · 连续 ' + S.streak + ' 天'); else start(nextMove()); },
     bell: function () { toast('14:00 会议前，记得来一组颈部唤醒'); },
     start: function (a) { start(BY_ID[a]); },
     quick: function () { var p = listOf(S.scene); if (!p.length) p = listOf('desk'); start(p[Math.floor(Math.random() * p.length)]); },
@@ -1416,7 +1881,7 @@ html.embedded{--sat:0px;--sab:0px;--top:20px}
       var card = $('nextCard'); replay(card, 'flip'); replay($('shuf'), 'spin');
       setTimeout(function () {
         var m = nextMove(), ni = nextInfo(m);
-        $('heroFig').innerHTML = fig(ni.anim, 104, '#4CB5AE', 4);
+        $('heroFig').innerHTML = fig(ni.anim, 92, '#4CB5AE', 4);
         $('nextTime').textContent = ni.time; $('nextTitle').textContent = ni.title; $('nextSub').textContent = tagsText(m);
       }, 220);
       setTimeout(function () { say('换我上场！'); }, 460);
@@ -1517,7 +1982,8 @@ html.embedded{--sat:0px;--sab:0px;--top:20px}
     exit: function () { S.session = null; overlay.innerHTML = ''; },
     toggle: function () { if (!S.session) return; S.session.paused = !S.session.paused; updateSession(false); },
     next: nextStep,
-    prev: function () { var s = S.session; if (!s) return; s.idx = Math.max(0, s.idx - 1); s.remain = s.steps[s.idx].dur; updateSession(true); },
+    prev: function () { var s = S.session; if (!s) return; s.idx = Math.max(0, s.idx - 1); s.ext = 0; s.steps[s.idx].dur = s.steps[s.idx].base; s.remain = s.steps[s.idx].dur; updateSession(true); },
+    addTime: function () { var s = S.session; if (!s || s.ext >= 2) return; s.ext++; s.remain += 10; s.steps[s.idx].dur += 10; updateSession(false); replay($('sesTime'), 'bump'); if (navigator.vibrate) { try { navigator.vibrate(15); } catch (e) {} } },
     finishDone: function () { closeDone('已打卡 · 久坐计时已重置'); },
     share: function () { closeDone('已晒到工位小队'); },
     // me
@@ -1555,6 +2021,7 @@ html.embedded{--sat:0px;--sab:0px;--top:20px}
       if (s.paused) return;
       s.remain--;
       if (s.remain <= 0) { nextStep(); return; }
+      if (s.remain === 3 && navigator.vibrate) { try { navigator.vibrate(25); } catch (e) {} }
       updateSession(false);
     } else if (!s) {
       S.sitSec++;

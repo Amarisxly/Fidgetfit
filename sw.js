@@ -1,5 +1,5 @@
 /* FidgetFit service worker: app shell works offline, fonts cached after first visit. */
-const VERSION = 'fidgetfit-v4';
+const VERSION = 'fidgetfit-v7';
 const SHELL = [
   './',
   './index.html',
